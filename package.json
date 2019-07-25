@@ -5,6 +5,8 @@
   "author": "<pipo.bizelli@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "nuxt": "^2.8.1"
+    "konva": "^3.4.1",
+    "nuxt": "^2.8.1",
+    "vue-konva": "^2.0.7"
   }
 }
