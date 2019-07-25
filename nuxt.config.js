@@ -1,8 +1,18 @@
 module.exports = {
+  env: {
+    base_url: `https://${process.env.BASE_URL}`
+  },
   plugins: [
     {
-      src: '~/plugins/konva-plugin.js',
+      src: '~/plugins/global.js'
+    },
+    {
+      src: '~/plugins/client.js',
       mode: 'client'
+    },
+    {
+      src: '~/plugins/server.js',
+      mode: 'server'
     }
   ]
 }

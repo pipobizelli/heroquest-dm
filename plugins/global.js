@@ -1,7 +1,3 @@
-// import PluginFontawesome from './fontawesome'
-import Vue from 'vue'
-import VueKonva from 'vue-konva'
+import PluginFontawesome from './fontawesome'
 
-Vue.use(VueKonva)
-
-// PluginFontawesome()
+PluginFontawesome()

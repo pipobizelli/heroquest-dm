@@ -56,6 +56,5 @@ export default function () {
     faGem,
     faHatWizard
   ])
-  Vue.component('font-awesome-icon',
-  FontAwesomeIcon)
+  Vue.component('font-awesome-icon', FontAwesomeIcon)
 }

@@ -10,7 +10,9 @@ import { setContext, getLocation, getRouteData, normalizeError } from './utils'
 
 /* Plugins */
 
-import nuxt_plugin_konvaplugin_851d48d4 from 'nuxt_plugin_konvaplugin_851d48d4' // Source: ../plugins/konva-plugin.js (mode: 'client')
+import nuxt_plugin_global_f21f4e84 from 'nuxt_plugin_global_f21f4e84' // Source: ../plugins/global.js (mode: 'all')
+import nuxt_plugin_client_035ad0d4 from 'nuxt_plugin_client_035ad0d4' // Source: ../plugins/client.js (mode: 'client')
+import nuxt_plugin_server_640c091e from 'nuxt_plugin_server_640c091e' // Source: ../plugins/server.js (mode: 'server')
 
 // Component: <NoSsr>
 Vue.component(NoSsr.name, NoSsr)
@@ -129,8 +131,16 @@ async function createApp(ssrContext) {
 
   // Plugin execution
 
-  if (process.client && typeof nuxt_plugin_konvaplugin_851d48d4 === 'function') {
-    await nuxt_plugin_konvaplugin_851d48d4(app.context, inject)
+  if (typeof nuxt_plugin_global_f21f4e84 === 'function') {
+    await nuxt_plugin_global_f21f4e84(app.context, inject)
+  }
+
+  if (process.client && typeof nuxt_plugin_client_035ad0d4 === 'function') {
+    await nuxt_plugin_client_035ad0d4(app.context, inject)
+  }
+
+  if (process.server && typeof nuxt_plugin_server_640c091e === 'function') {
+    await nuxt_plugin_server_640c091e(app.context, inject)
   }
 
   // If server-side, wait for async component to be resolved first
