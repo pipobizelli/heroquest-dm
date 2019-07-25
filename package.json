@@ -5,6 +5,9 @@
   "author": "<pipo.bizelli@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.19",
+    "@fortawesome/free-solid-svg-icons": "^5.9.0",
+    "@fortawesome/vue-fontawesome": "^0.1.6",
     "konva": "^3.4.1",
     "nuxt": "^2.8.1",
     "vue-konva": "^2.0.7"
