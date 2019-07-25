@@ -1,0 +1,21 @@
+{
+  "name": "",
+  "description": "",
+  "dificulty": "",
+  "components": [],
+  "objectives": {},
+  "slots": [],
+  "map": {
+    "searchs": {
+      "traps": [],
+      "treasures": [],
+      "secretdoors": []
+    },
+    "disables": [],
+    "doors": [],
+    "blocks": [],
+    "stairway": [],
+    "traps": [],
+    "secretdoors": []
+  }
+}
