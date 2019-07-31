@@ -1,6 +1,10 @@
 {
   "lines": 19,
   "columns": 26,
+  "tile": {
+    "width": 33,
+    "height": 33
+  },
   "config": {
     "0:0": {
       "config": "1001",

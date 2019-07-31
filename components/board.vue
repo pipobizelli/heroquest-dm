@@ -6,15 +6,7 @@
         <v-layer>
           <template v-for="(line, l) in board.tiles.lines">
             <template v-for="(column, c) in board.tiles.columns">
-              <v-rect ref="tile" :config="{
-                handle: `${l}:${c}`,
-                x: (33 * c),
-                y: (33 * l),
-                width: 33,
-                height: 33,
-                opacity: 0.5,
-                fill: selectedTiles.indexOf(`${l}:${c}`) >= 0 ? '#bababa' : 'transparent'
-              }" @click="tile_click" @dblclick="tile_dblclick($event, `${l}:${c}`)"></v-rect>
+              <v-rect ref="tile" :config="get_config(l, c)" @click="tile_click" @dblclick="tile_dblclick($event, `${l}:${c}`)"></v-rect>
             </template>
           </template>
         </v-layer>
@@ -45,12 +37,51 @@ export default {
       selectedTiles: []
     }
   },
-  watch: {
-    selectedTiles (n) {
-      console.log(n)
+  props: {
+    disabledTiles: {
+      type: Array,
+      default: []
     }
   },
   methods: {
+    get_config (l, c) {
+      let handle = `${l}:${c}`
+      return {
+        handle,
+        ...this.get_tile_fill(handle),
+        x: (BoardConfig.tile.width * c),
+        y: (BoardConfig.tile.height * l),
+        width: BoardConfig.tile.width,
+        height: BoardConfig.tile.height
+      }
+    },
+    get_tile_fill (handle) {
+      if (this.disabledTiles.indexOf(handle) >= 0) {
+        if (this.selectedTiles.indexOf(handle) >= 0) {
+          return {
+            opacity: 0.8,
+            fill: '#5faa5a'
+          }
+        }
+
+        return {
+          opacity: 0.8,
+          fill: '#c8c8c8'
+        }
+      }
+
+      if (this.selectedTiles.indexOf(handle) >= 0) {
+        return {
+          opacity: 0.5,
+          fill: '#69d162'
+        }
+      }
+
+      return {
+        opacity: 0.5,
+        fill: 'transparent'
+      }
+    },
     clear_selected_tiles () {
       this.selectedTiles = []
     },

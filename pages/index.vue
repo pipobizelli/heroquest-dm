@@ -1,6 +1,6 @@
 <template>
   <section>
-    <board></board>
+    <board :disabledTiles="[]"></board>
   </section>
 </template>
 
