@@ -24,7 +24,7 @@ export default () => {
         return result
       } catch (e) {
         console.log('[adapter] getAll')
-        return {}
+        return e
       }
     },
 

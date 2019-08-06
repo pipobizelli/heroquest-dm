@@ -1,13 +1,11 @@
 <template>
   <section>
-    <img :src="board.image" alt="tabuleiro">
+    <img :src="boardImage" alt="tabuleiro">
     <no-ssr placeholder="Loading...">
       <v-stage :config="configKonva" class="board">
         <v-layer>
-          <template v-for="(line, l) in board.tiles.lines">
-            <template v-for="(column, c) in board.tiles.columns">
-              <v-rect ref="tile" :config="get_config(l, c)" @click="tile_click" @dblclick="tile_dblclick($event, `${l}:${c}`)"></v-rect>
-            </template>
+          <template v-for="tile in tiles">
+            <v-rect :config="tile" @click="tile_click(tile.handle)" @dblclick="tile_dblclick($event, tile.handle)"></v-rect>
           </template>
         </v-layer>
       </v-stage>
@@ -17,7 +15,6 @@
 
 <script>
 import Config from '@@/config/env'
-import BoardConfig from '@@/data/board.json'
 import Pathfinder from '@@/helpers/pathfinder'
 export default {
   data () {
@@ -26,72 +23,81 @@ export default {
         width: 858,
         height: 627
       },
-      board: {
-        image: `${Config.paths.images}boardmap.png?alt=media`,
-        tiles: {
-          lines: BoardConfig.lines,
-          columns: BoardConfig.columns
-        },
-        config: BoardConfig.config
+      boardImage: `${Config.paths.images}boardmap.png?alt=media`,
+      map: this.$store.state.board.map,
+      tiles: this.$store.state.board.tiles,
+      quest: {
+        heroes: [],
+        monsters: [],
+        misc: [],
+        active_turn: 0,
+        disabledTiles: ['0:1', '0:2'],
+        ...this.setupQuest
       },
       selectedTiles: []
     }
   },
-  props: {
-    disabledTiles: {
-      type: Array,
-      default: []
+  watch: {
+    selectedTiles (tiles) {
+      tiles.map(tile => {
+        this.set_tile_options(tile)
+      })
     }
   },
+  props: ['setupQuest'],
+  created () {
+    this.$store.dispatch('board/init')
+    this.quest.disabledTiles.map(tile => {
+      this.set_tile_options(tile)
+    })
+  },
   methods: {
-    get_config (l, c) {
-      let handle = `${l}:${c}`
-      return {
-        handle,
-        ...this.get_tile_fill(handle),
-        x: (BoardConfig.tile.width * c),
-        y: (BoardConfig.tile.height * l),
-        width: BoardConfig.tile.width,
-        height: BoardConfig.tile.height
-      }
+    clear_selected_tiles () {
+      let tempTiles = this.selectedTiles
+      this.selectedTiles = []
+      tempTiles.map(tile => {
+        this.set_tile_options(tile)
+      })
     },
-    get_tile_fill (handle) {
-      if (this.disabledTiles.indexOf(handle) >= 0) {
-        if (this.selectedTiles.indexOf(handle) >= 0) {
-          return {
-            opacity: 0.8,
-            fill: '#5faa5a'
-          }
-        }
-
-        return {
-          opacity: 0.8,
-          fill: '#c8c8c8'
-        }
+    set_tile_options (tile) {
+      let options = {
+        fill: 'transparent',
+        opacity: 0.5
       }
 
-      if (this.selectedTiles.indexOf(handle) >= 0) {
-        return {
+      if (this.selectedTiles.indexOf(tile) >= 0) {
+        options = {
           opacity: 0.5,
           fill: '#69d162'
         }
       }
 
-      return {
-        opacity: 0.5,
-        fill: 'transparent'
+      if (this.quest.disabledTiles.indexOf(tile) >= 0) {
+        options = {
+          opacity: 0.8,
+          fill: '#c8c8c8'
+        }
+
+        if (this.selectedTiles.indexOf(tile) >= 0) {
+          options = {
+            opacity: 0.8,
+            fill: '#5faa5a'
+          }
+        }
+      }
+
+      this.tiles[tile] = {
+        ...this.tiles[tile],
+        ...options
       }
     },
-    clear_selected_tiles () {
-      this.selectedTiles = []
-    },
-    tile_click (e) {
+    tile_click (tile) {
       this.clear_selected_tiles()
-      this.selectedTiles = [ e.target.attrs.handle ]
+      this.selectedTiles = [ tile ]
     },
     tile_dblclick (e, tile) {
       this.clear_selected_tiles()
-      this.selectedTiles = Pathfinder(this.board).getAllPaths(tile)
+      this.selectedTiles = Pathfinder(this.map).getAllPaths(tile)
     }
   }
 }
