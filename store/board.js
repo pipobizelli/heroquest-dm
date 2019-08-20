@@ -8,12 +8,16 @@ export const state = () => ({
     },
     config: BoardConfig.config
   },
+  selectedTiles: [],
   tiles: {}
 })
 
 export const mutations = {
   set_tiles (state, config) {
     state.tiles = config
+  },
+  set_selected (state, tilesArr) {
+    state.selectedTiles = tilesArr
   }
 }
 

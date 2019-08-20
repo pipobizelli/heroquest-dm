@@ -17,6 +17,7 @@ void (function updateModules() {
   store.modules = store.modules || {}
 
   resolveStoreModules(require('../store/board.js'), 'board.js')
+  resolveStoreModules(require('../store/quest.js'), 'quest.js')
 
   // If the environment supports hot reloading...
 
@@ -24,6 +25,7 @@ void (function updateModules() {
     // Whenever any Vuex module is updated...
     module.hot.accept([
       '../store/board.js',
+      '../store/quest.js',
     ], () => {
       // Update `root.modules` with the latest definitions.
       updateModules()
