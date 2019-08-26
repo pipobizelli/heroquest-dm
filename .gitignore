@@ -1,6 +1,8 @@
 .env
 /config
 .nuxt
+cors.json
+/y
 
 # Logs
 logs

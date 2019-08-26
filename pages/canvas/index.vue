@@ -4,16 +4,14 @@
 </template>
 
 <script>
-import {canvasInit} from '@@/modules/index'
+import { canvasInit } from '@@/modules/editor/index'
 
 export default {
-  created () {
+  async mounted () {
     if (process.browser) {
       window.Store = this.$store
+      await canvasInit()
     }
-  },
-  async mounted () {
-    await canvasInit()
   }
 }
 </script>

@@ -5,11 +5,8 @@
 </template>
 
 <script>
-import Board from '@@/components/board'
+// import Board from '@@/components/board'
 export default {
-  components: {
-    Board
-  }
 }
 </script>
 
