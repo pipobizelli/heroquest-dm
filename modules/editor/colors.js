@@ -10,7 +10,7 @@ export const colors = {
 }
 
 export function getTileColor (l, c) {
-  let color = window.Store.state.board.disabledTiles.indexOf(`${l}:${c}`) >= 0
+  const color = window.Store.state.board.disabledTiles.indexOf(`${l}:${c}`) >= 0
     ? 'disabled'
     : window.Store.state.board.selectedTiles.indexOf(`${l}:${c}`) >= 0
       ? 'selected'
@@ -20,7 +20,7 @@ export function getTileColor (l, c) {
 }
 
 export function getTileAlpha (l, c) {
-  let alpha = window.Store.state.board.disabledTiles.indexOf(`${l}:${c}`) >= 0
+  const alpha = window.Store.state.board.disabledTiles.indexOf(`${l}:${c}`) >= 0
     ? 0.5
     : window.Store.state.board.selectedTiles.indexOf(`${l}:${c}`) >= 0
       ? 0.3

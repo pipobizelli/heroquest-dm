@@ -15,9 +15,13 @@ export async function canvasInit () {
   PIXI.Loader.shared
     .add(`${Config.paths.base_url}/api/spritesheet.json`)
     .load(async () => {
-      const grid = await Grid()
-      const menu = await Menu()
-      canvasApp.stage.addChild(grid.setupGrid(), menu.setupMenus())
+      const grid = new Grid()
+      const menu = new Menu()
+      await grid.setup()
+      await menu.setup()
+      grid.drawGrid()
+      canvasApp.stage.addChild(grid.data, menu.data)
       grid.drawBorders()
+      // grid.drawGrid()
     })
 }

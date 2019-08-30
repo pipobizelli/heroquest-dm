@@ -1,45 +1,54 @@
 import BoardConfig from '@@/data/board.json'
-import Grid from '@@/modules/editor/grid'
-import { colors } from '@@/modules/editor/colors'
+import Grid from './grid'
+import { colors } from './colors'
+import options from './options'
 
-export default async () => {
-  const PIXI = await import('pixi.js')
-  const Filters = await import('pixi-filters')
-  const bgH = 50
-  const bgW = 200
-  const menus = new PIXI.Container()
-  const menuOptions = [{
-    label: 'Desabilitar Tiles',
-    conditional: window.Store.state.board.selectedTiles.length > 0,
-    callback: async () => {
-      const tiles = window.Store.state.board.selectedTiles
-      window.Store.commit('board/set_disabled', tiles)
-      await Grid().drawGrid()
+let instance = null
+export default class Menu {
+  constructor () {
+    if (instance) {
+      return instance
     }
-  }]
-
-  var setupMenus = () => {
-    menus.x = 0
-    menus.y = 0
-    return menus
+    instance = this
+    return instance
   }
 
-  var drawOption = ({ label, index, callback }) => {
-    const option = new PIXI.Container()
-    const bg = new PIXI.Graphics()
-    const handle = new PIXI.Text(label, { font: 'Tahoma', fontSize: 14, fill: colors.black, align: 'left' })
-    const optH = 25
+  async setup () {
+    this.PIXI = await import('pixi.js')
+    this.Filters = await import('pixi-filters')
+    this.grid = new Grid()
+    this.options = options()
+    this.bgH = (Object.values(this.options).length * 25) + 10
+    this.bgW = 200
+    this.wrapper = new this.PIXI.Container()
+    this.wrapper.x = 0
+    this.wrapper.y = 0
+    return this
+  }
 
-    handle.y = 10
+  get data () {
+    return this.wrapper
+  }
+
+  drawOption ({ label, callback }, index) {
+    const option = new this.PIXI.Container()
+    const bg = new this.PIXI.Graphics()
+    const handle = new this.PIXI.Text(label, { font: 'Tahoma', fontSize: 14, fill: colors.black, align: 'left' })
+    const optH = 25
+    const self = this
+
+    option.y = (optH * index) + 5
+
+    handle.y = 4
     handle.x = 15
 
     option.addChild(bg, handle)
-    option.hitArea = new PIXI.Rectangle(0, 5, bgW, optH)
+    option.hitArea = new this.PIXI.Rectangle(0, 0, this.bgW, optH)
 
     option
       .on('pointerover', function () {
         bg.beginFill(colors.blue, 1)
-        bg.drawRect(0, 5, bgW, optH)
+        bg.drawRect(0, 0, self.bgW, optH)
         bg.endFill()
         handle.style.fill = colors.white
       })
@@ -55,44 +64,39 @@ export default async () => {
     return option
   }
 
-  var drawMenu = ({ x, y }) => {
-    const menuWrapper = new PIXI.Container()
-    menuWrapper.x = x > (BoardConfig.width - bgW) ? x - bgW : x
-    menuWrapper.y = y > (BoardConfig.height - bgH) ? y - bgH : y
+  drawMenu ({ x, y }) {
+    const menuWrapper = new this.PIXI.Container()
+    menuWrapper.x = x > (BoardConfig.width - this.bgW) ? x - this.bgW : x
+    menuWrapper.y = y > (BoardConfig.height - this.bgH) ? y - this.bgH : y
     menuWrapper.removeChildren()
 
-    const shadow = new Filters.DropShadowFilter()
+    const shadow = new this.Filters.DropShadowFilter()
     shadow.alpha = 0.3
     shadow.distance = 1
 
-    const menu = new PIXI.Graphics()
+    const menu = new this.PIXI.Graphics()
     menu.filters = [shadow]
 
     menu.lineStyle(1, colors.menuBorder, 1)
     menu.clear()
     menu.beginFill(colors.menu, 1)
-    menu.drawRoundedRect(0, 0, bgW, bgH, 3)
+    menu.drawRoundedRect(0, 0, this.bgW, this.bgH, 5)
     menu.endFill()
 
     menuWrapper.addChild(menu)
 
-    const disables = drawOption({
-      label: 'Desabilitar Tiles',
-      callback: async () => {
-        const tiles = window.Store.state.board.selectedTiles
-        window.Store.commit('board/set_disabled', tiles)
-        await Grid().drawGrid()
-        closeMenu()
-      }
-    })
-
-    menuWrapper.addChild(disables)
+    const opts = Object.values(this.options)
+    for (const o in opts) {
+      const opt = this.drawOption(opts[o], parseInt(o))
+      menuWrapper.addChild(opt)
+    }
 
     return menuWrapper
   }
 
-  var drawArea = () => {
-    const area = new PIXI.Graphics()
+  drawArea () {
+    const area = new this.PIXI.Graphics()
+    const self = this
     area.clear()
     area.beginFill(colors.white, 0.1)
     area.drawRect(0, 0, BoardConfig.width, BoardConfig.height)
@@ -100,25 +104,18 @@ export default async () => {
 
     area
       .on('click', function () {
-        closeMenu()
+        self.closeMenu()
       })
       .interactive = true
 
     return area
   }
 
-  var openMenu = ({ x, y }) => {
-    menus.addChild(drawArea(), drawMenu({ x, y }))
+  openMenu ({ x, y }) {
+    this.wrapper.addChild(this.drawArea(), this.drawMenu({ x, y }))
   }
 
-  var closeMenu = () => {
-    menus.removeChildren()
-  }
-
-  return {
-    menuOptions,
-    setupMenus,
-    openMenu,
-    closeMenu
+  closeMenu () {
+    this.wrapper.removeChildren()
   }
 }

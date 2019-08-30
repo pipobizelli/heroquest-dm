@@ -18,5 +18,8 @@ export const mutations = {
   },
   set_disabled (state, tilesArr) {
     state.disabledTiles = state.disabledTiles.concat(tilesArr)
+  },
+  enable_tiles (state, tilesArr) {
+    state.disabledTiles = state.disabledTiles.filter(t => !tilesArr.includes(t))
   }
 }
