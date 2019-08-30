@@ -15,5 +15,8 @@ export const state = () => ({
 export const mutations = {
   set_selected (state, tilesArr) {
     state.selectedTiles = tilesArr
+  },
+  set_disabled (state, tilesArr) {
+    state.disabledTiles = state.disabledTiles.concat(tilesArr)
   }
 }

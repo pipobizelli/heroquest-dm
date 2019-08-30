@@ -1,9 +1,12 @@
 export const colors = {
-  iddle: 0xFFFFFF,
+  white: 0xFFFFFF,
+  black: 0x000000,
   hover: 0xEDEDED,
   disabled: 0xA5A5A5,
   selected: 0x96FF96,
-  menu: 0xF0F0F0
+  menu: 0xF0F0F0,
+  menuBorder: 0xBFBFBF,
+  blue: 0x4B9DF8
 }
 
 export function getTileColor (l, c) {
@@ -11,7 +14,7 @@ export function getTileColor (l, c) {
     ? 'disabled'
     : window.Store.state.board.selectedTiles.indexOf(`${l}:${c}`) >= 0
       ? 'selected'
-      : 'iddle'
+      : 'white'
 
   return colors[color]
 }

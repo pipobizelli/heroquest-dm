@@ -157,8 +157,8 @@ export default (map) => {
       return false
     }
 
-    let tile = getTilebyHandle(t)
-    let tilesAround = [
+    const tile = getTilebyHandle(t)
+    const tilesAround = [
       getTileHandle(getDiagUpLeftTile(tile)),
       getTileHandle(getDiagUpRightTile(tile)),
       getTileHandle(getDiagDownLeftTile(tile)),
