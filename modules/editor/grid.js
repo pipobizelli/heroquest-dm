@@ -22,11 +22,20 @@ export default class Grid {
     this.grid.y = 6
     this.grid.label = 'grid'
     this.menu = new Menu()
+    this.sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/spritesheet.json`].spritesheet
     return this
   }
 
   get data () {
     return this.grid
+  }
+
+  get tilePositon () {
+    const tile = window.Store.state.board.selectedTiles[0]
+    const first = tile.split(':')
+    const x = parseInt(first[1]) * 33
+    const y = parseInt(first[0]) * 33
+    return { x, y }
   }
 
   clearGrid () {
@@ -43,11 +52,10 @@ export default class Grid {
   }
 
   drawBorders () {
-    const sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/spritesheet.json`].spritesheet
-    const btop = new this.PIXI.Sprite(sheet.textures['border-top.png'])
-    const bright = new this.PIXI.Sprite(sheet.textures['border-right.png'])
-    const bbottom = new this.PIXI.Sprite(sheet.textures['border-bottom.png'])
-    const bleft = new this.PIXI.Sprite(sheet.textures['border-left.png'])
+    const btop = new this.PIXI.Sprite(this.sheet.textures['border-top.png'])
+    const bright = new this.PIXI.Sprite(this.sheet.textures['border-right.png'])
+    const bbottom = new this.PIXI.Sprite(this.sheet.textures['border-bottom.png'])
+    const bleft = new this.PIXI.Sprite(this.sheet.textures['border-left.png'])
 
     btop.x = 0
     btop.y = 0
@@ -67,12 +75,12 @@ export default class Grid {
   }
 
   drawGrid () {
-    const sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/spritesheet.json`].spritesheet
+    // const sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/spritesheet.json`].spritesheet
     this.clearGrid()
     for (let l = 0; l < BoardConfig.lines; l++) {
       for (let c = 0; c < BoardConfig.columns; c++) {
         const config = BoardConfig.config[`${l}:${c}`].config
-        const tile = new this.PIXI.Sprite(sheet.textures[`${config}.png`])
+        const tile = new this.PIXI.Sprite(this.sheet.textures[`${config}.png`])
         tile.label = `${l}:${c}`
         tile.x = c * 33
         tile.y = l * 33
@@ -100,10 +108,11 @@ export default class Grid {
     let timer
     tile
       .on('click', function () {
+        console.log('tile:', this.x)
         clicks++
         if (clicks === 1) {
           timer = setTimeout(function () {
-            window.Store.commit('board/set_selected', [this.label])
+            window.Store.commit('board/set_selected', [tile.label])
             self.drawGrid()
           }, delay)
         } else {
@@ -128,10 +137,12 @@ export default class Grid {
         })
       })
       .on('rightdown', async function (e) {
-        self.menu.openMenu({
-          x: e.data.global.x,
-          y: e.data.global.y
-        })
+        const x = e.data.global.x
+        const y = e.data.global.y
+        const label = `${parseInt(y / 33)}:${parseInt(x / 33)}`
+        window.Store.commit('board/set_selected', [label])
+        self.drawGrid()
+        self.menu.openMenu({ x, y })
       })
 
     tile.interactive = true

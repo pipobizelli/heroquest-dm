@@ -2,6 +2,7 @@ import Config from '@@/config/env'
 import BoardConfig from '@@/data/board.json'
 import Grid from '@@/modules/editor/grid'
 import Menu from '@@/modules/editor/menu'
+import Actors from '@@/modules/editor/actors'
 
 export async function canvasInit () {
   const PIXI = await import('pixi.js')
@@ -17,11 +18,13 @@ export async function canvasInit () {
     .load(async () => {
       const grid = new Grid()
       const menu = new Menu()
+      const actors = new Actors()
+
       await grid.setup()
       await menu.setup()
+      await actors.setup()
       grid.drawGrid()
-      canvasApp.stage.addChild(grid.data, menu.data)
+      canvasApp.stage.addChild(grid.data, actors.data, menu.data)
       grid.drawBorders()
-      // grid.drawGrid()
     })
 }
