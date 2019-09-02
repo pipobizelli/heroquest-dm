@@ -2,7 +2,7 @@ import Config from '@@/config/env'
 import BoardConfig from '@@/data/board.json'
 import Pathfinder from '@@/helpers/pathfinder'
 import Menu from './menu'
-import { colors, getTileColor } from './colors'
+import { getTileColor } from './colors'
 
 let instance = null
 
@@ -34,11 +34,11 @@ export default class Grid {
     return this
   }
 
-  changeFill ({ tile, color, alpha, x, y }) {
+  changeFill ({ tile, color, alpha }) {
     tile.tint = color
     tile.alpha = alpha
-    tile.x = x
-    tile.y = y
+    // tile.x = x
+    // tile.y = y
     return tile
   }
 
@@ -73,13 +73,14 @@ export default class Grid {
       for (let c = 0; c < BoardConfig.columns; c++) {
         const config = BoardConfig.config[`${l}:${c}`].config
         const tile = new this.PIXI.Sprite(sheet.textures[`${config}.png`])
+        tile.label = `${l}:${c}`
+        tile.x = c * 33
+        tile.y = l * 33
 
         this.changeFill({
           tile,
-          color: getTileColor(l, c),
-          alpha: 1,
-          x: c * 33,
-          y: l * 33
+          color: getTileColor(tile.label),
+          alpha: 1
         })
 
         // EVENTS
@@ -97,43 +98,34 @@ export default class Grid {
     const self = this
     let clicks = 0
     let timer
-    tile.label = `${l}:${c}`
     tile
       .on('click', function () {
         clicks++
         if (clicks === 1) {
           timer = setTimeout(function () {
-            window.Store.commit('board/set_selected', [`${l}:${c}`])
+            window.Store.commit('board/set_selected', [this.label])
             self.drawGrid()
           }, delay)
         } else {
           clearTimeout(timer)
-          const path = Pathfinder(window.Store.state.board.map).getAllPaths(`${l}:${c}`)
+          const path = Pathfinder(window.Store.state.board.map).getAllPaths(this.label)
           window.Store.commit('board/set_selected', path)
           self.drawGrid()
         }
       })
       .on('pointerover', function () {
-        if (window.Store.state.board.disabledTiles.indexOf(`${l}:${c}`) < 0) {
-          self.changeFill({
-            tile: this,
-            color: window.Store.state.board.selectedTiles.indexOf(`${l}:${c}`) >= 0 ? colors.selected : colors.hover,
-            alpha: window.Store.state.board.selectedTiles.indexOf(`${l}:${c}`) >= 0 ? 0.7 : 1,
-            x: c * 33,
-            y: l * 33
-          })
-        }
+        self.changeFill({
+          tile: this,
+          color: getTileColor(this.label, 'hover'),
+          alpha: 0.8
+        })
       })
       .on('pointerout', function () {
-        if (window.Store.state.board.disabledTiles.indexOf(`${l}:${c}`) < 0) {
-          self.changeFill({
-            tile: this,
-            color: window.Store.state.board.selectedTiles.indexOf(`${l}:${c}`) >= 0 ? colors.selected : colors.white,
-            alpha: 1,
-            x: c * 33,
-            y: l * 33
-          })
-        }
+        self.changeFill({
+          tile: this,
+          color: getTileColor(this.label),
+          alpha: 1
+        })
       })
       .on('rightdown', async function (e) {
         self.menu.openMenu({
