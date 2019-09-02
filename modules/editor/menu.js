@@ -1,7 +1,7 @@
 import BoardConfig from '@@/data/board.json'
 import Grid from './grid'
+import Options from './options'
 import { colors } from './colors'
-import options from './options'
 
 let instance = null
 export default class Menu {
@@ -17,12 +17,20 @@ export default class Menu {
     this.PIXI = await import('pixi.js')
     this.Filters = await import('pixi-filters')
     this.grid = new Grid()
-    this.options = options()
-    this.bgH = (Object.values(this.options).length * 25) + 10
-    this.bgW = 200
+    this.options = Options()
     this.wrapper = new this.PIXI.Container()
     this.wrapper.x = 0
     this.wrapper.y = 0
+    this.optH = 25
+    this.bgW = 200
+    const groups = Object.values(this.options)
+    let options = 0
+    for (const g in groups) {
+      options += Object.values(groups[g]).length
+    }
+    this.bgH = (options * this.optH) + (groups.length * 10)
+    this.menuH = 0
+
     return this
   }
 
@@ -30,25 +38,40 @@ export default class Menu {
     return this.wrapper
   }
 
+  drawGroup (options, index) {
+    const group = new this.PIXI.Container()
+
+    if (index > 0) {
+      const bg = new this.PIXI.Graphics()
+      bg.lineStyle(2, colors.darkGray, 0.2)
+      bg.lineTo(this.bgW, 0)
+      bg.y = -5
+      group.addChild(bg)
+    }
+
+    group.y = this.menuH + 5
+    this.menuH += (this.optH * options) + 10
+
+    return group
+  }
+
   drawOption ({ label, callback }, index) {
     const option = new this.PIXI.Container()
     const bg = new this.PIXI.Graphics()
     const handle = new this.PIXI.Text(label, { font: 'Tahoma', fontSize: 14, fill: colors.black, align: 'left' })
-    const optH = 25
-    const self = this
 
-    option.y = (optH * index) + 5
+    option.y = (this.optH * index)
 
     handle.y = 4
     handle.x = 15
 
     option.addChild(bg, handle)
-    option.hitArea = new this.PIXI.Rectangle(0, 0, this.bgW, optH)
+    option.hitArea = new this.PIXI.Rectangle(0, 0, this.bgW, this.optH)
 
     option
-      .on('pointerover', function () {
+      .on('pointerover', () => {
         bg.beginFill(colors.blue, 1)
-        bg.drawRect(0, 0, self.bgW, optH)
+        bg.drawRect(0, 0, this.bgW, this.optH)
         bg.endFill()
         handle.style.fill = colors.white
       })
@@ -85,10 +108,15 @@ export default class Menu {
 
     menuWrapper.addChild(menu)
 
-    const opts = Object.values(this.options)
-    for (const o in opts) {
-      const opt = this.drawOption(opts[o], parseInt(o))
-      menuWrapper.addChild(opt)
+    const groups = Object.values(this.options)
+    for (const g in groups) {
+      const opts = Object.values(groups[g])
+      const group = this.drawGroup(opts.length, parseInt(g))
+      for (const o in opts) {
+        const opt = this.drawOption(opts[o], o)
+        group.addChild(opt)
+      }
+      menuWrapper.addChild(group)
     }
 
     return menuWrapper

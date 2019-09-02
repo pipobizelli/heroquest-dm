@@ -139,9 +139,11 @@ export default class Grid {
       .on('rightdown', async function (e) {
         const x = e.data.global.x
         const y = e.data.global.y
-        const label = `${parseInt(y / 33)}:${parseInt(x / 33)}`
-        window.Store.commit('board/set_selected', [label])
-        self.drawGrid()
+        if (window.Store.state.board.selectedTiles.length < 1) {
+          const label = `${parseInt(y / 33)}:${parseInt(x / 33)}`
+          window.Store.commit('board/set_selected', [label])
+          self.drawGrid()
+        }
         self.menu.openMenu({ x, y })
       })
 
