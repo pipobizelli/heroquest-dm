@@ -48,6 +48,24 @@ export default function () {
         }, {
           label: 'Goblin',
           callback: () => { actors.addMonster('goblin', grid.tilePositon) }
+        }, {
+          label: 'Fimir',
+          callback: () => { actors.addMonster('fimir', grid.tilePositon) }
+        }, {
+          label: 'Esqueleto',
+          callback: () => { actors.addMonster('skeleton', grid.tilePositon) }
+        }, {
+          label: 'Zumbi',
+          callback: () => { actors.addMonster('zombie', grid.tilePositon) }
+        }, {
+          label: 'Mumia',
+          callback: () => { actors.addMonster('mummy', grid.tilePositon) }
+        }, {
+          label: 'G. Caos',
+          callback: () => { actors.addMonster('chaos', grid.tilePositon) }
+        }, {
+          label: 'Gárgola',
+          callback: () => { actors.addMonster('gargoyle', grid.tilePositon) }
         }]
       }
     }

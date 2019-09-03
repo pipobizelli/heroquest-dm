@@ -24,14 +24,13 @@ export default class Menu {
     this.wrapper.y = 0
 
     this.subWrapper = new this.PIXI.Container()
-    this.subWrapper.y = 5
 
     this.menuX = 0
     this.menuY = 0
 
     this.groupsCount = []
     this.optH = 25
-    this.bgW = 150
+    this.bgW = 170
     const groups = Object.values(this.options)
     let options = 0
     for (const g in groups) {
@@ -67,6 +66,9 @@ export default class Menu {
     const option = new this.PIXI.Container()
     const bg = new this.PIXI.Graphics()
     const handle = new this.PIXI.Text(label, { font: 'Tahoma', fontSize: 14, fill: colors.black, align: 'left' })
+    const subSymbol = new this.PIXI.Text('▶', { font: 'Tahoma', fontSize: 11, fill: colors.black, align: 'right' })
+    subSymbol.y = 6
+    subSymbol.x = this.bgW - 24
 
     option.y = (this.optH * index)
 
@@ -76,12 +78,17 @@ export default class Menu {
     option.addChild(bg, handle)
     option.hitArea = new this.PIXI.Rectangle(0, 0, this.bgW, this.optH)
 
+    if (sub.length) {
+      option.addChild(subSymbol)
+    }
+
     option
       .on('pointerover', () => {
         bg.beginFill(colors.blue, 1)
         bg.drawRect(0, 0, this.bgW, this.optH)
         bg.endFill()
         handle.style.fill = colors.white
+        subSymbol.style.fill = colors.white
 
         if (!sub) {
           this.closeSubMenu()
@@ -94,6 +101,7 @@ export default class Menu {
       .on('pointerout', () => {
         bg.clear()
         handle.style.fill = colors.black
+        subSymbol.style.fill = colors.black
       })
       .on('click', function () {
         callback()
@@ -166,14 +174,18 @@ export default class Menu {
       width: this.bgW,
       height: (optionsArr.length * this.optH) + 10
     })
+    const group = new this.PIXI.Container()
+    group.y = 5
 
     for (const o in optionsArr) {
       const opt = this.drawOption({
         ...optionsArr[o],
         sub: true
       }, o)
-      menuWrapper.addChild(opt)
+      group.addChild(opt)
     }
+
+    menuWrapper.addChild(group)
 
     return menuWrapper
   }
