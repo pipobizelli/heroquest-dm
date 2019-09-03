@@ -31,55 +31,24 @@ export default function () {
       }
     },
     actors: {
-      addActor: {
-        label: 'Adicionar Actor',
+      addSlot: {
+        label: 'Adicionar Slot',
         callback: () => {
-          actors.addActor({
-            ...grid.tilePositon,
-            type: 'barbarian',
-            width: 33,
-            height: 33
-          })
+          actors.addSlot(grid.tilePositon)
+          window.Store.commit('board/set_selected', [])
           menu.closeMenu()
-        }
-      }
-    },
-    doors: {
-      addActor: {
-        label: 'Adicionar Actor',
-        callback: () => {
-          actors.addActor({
-            ...grid.tilePositon,
-            type: 'barbarian',
-            width: 33,
-            height: 33
-          })
-          menu.closeMenu()
+          grid.drawGrid()
         }
       },
-      addDoor: {
-        label: 'Adicionar Actor',
-        callback: () => {
-          actors.addActor({
-            ...grid.tilePositon,
-            type: 'barbarian',
-            width: 33,
-            height: 33
-          })
-          menu.closeMenu()
-        }
-      },
-      addBlock: {
-        label: 'Adicionar Actor',
-        callback: () => {
-          actors.addActor({
-            ...grid.tilePositon,
-            type: 'barbarian',
-            width: 33,
-            height: 33
-          })
-          menu.closeMenu()
-        }
+      addMonster: {
+        label: 'Adicionar Monstro',
+        sub: [{
+          label: 'Orc',
+          callback: () => { actors.addMonster('orc', grid.tilePositon) }
+        }, {
+          label: 'Goblin',
+          callback: () => { actors.addMonster('goblin', grid.tilePositon) }
+        }]
       }
     }
   }

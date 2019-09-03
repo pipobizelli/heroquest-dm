@@ -1,8 +1,9 @@
 import Config from '@@/config/env'
 import Grid from './grid'
+import Menu from './menu'
 
 let instance = null
-export default class Menu {
+export default class Actors {
   constructor () {
     if (instance) {
       return instance
@@ -14,15 +15,41 @@ export default class Menu {
   async setup () {
     this.PIXI = await import('pixi.js')
     this.grid = new Grid()
+    this.menu = new Menu()
     this.wrapper = new this.PIXI.Container()
     this.wrapper.x = 6
     this.wrapper.y = 6
     this.sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/spritesheet.json`].spritesheet
+    this.slots = 0
     return this
   }
 
   get data () {
     return this.wrapper
+  }
+
+  addSlot ({ x, y }) {
+    this.slots++
+    const slot = new this.PIXI.Sprite(this.sheet.textures[`${this.slots}.png`])
+    slot.x = x + (16 - slot.width / 2)
+    slot.y = y + (16 - slot.height / 2)
+    slot.buttonMode = true
+
+    this.actorEvents(slot)
+
+    this.wrapper.addChild(slot)
+  }
+
+  addMonster (type, tilePositon) {
+    this.addActor({
+      ...tilePositon,
+      type: type,
+      width: 33,
+      height: 33
+    })
+    window.Store.commit('board/set_selected', [])
+    this.grid.drawGrid()
+    this.menu.closeMenu()
   }
 
   addActor ({ type, width, height, x, y }) {
