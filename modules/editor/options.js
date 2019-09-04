@@ -11,20 +11,32 @@ export default function () {
     tiles: {
       disable: {
         label: 'Desabilitar Tiles',
-        group: 'tiles',
+        condition: () => {
+          const selected = window.Store.state.board.selectedTiles
+          const disabled = window.Store.state.board.disabledTiles
+          const intersection = selected.filter(v => disabled.indexOf(v) >= 0)
+          return intersection.length < 1
+        },
         callback: () => {
           const tiles = window.Store.state.board.selectedTiles
           window.Store.commit('board/set_disabled', tiles)
+          window.Store.commit('board/set_selected', [])
           menu.closeMenu()
           grid.drawGrid()
         }
       },
       enable: {
         label: 'Habilitar Tiles',
-        group: 'tiles',
+        condition: () => {
+          const selected = window.Store.state.board.selectedTiles
+          const disabled = window.Store.state.board.disabledTiles
+          const intersection = selected.filter(v => disabled.indexOf(v) >= 0)
+          return intersection.length > 0
+        },
         callback: () => {
           const tiles = window.Store.state.board.selectedTiles
           window.Store.commit('board/enable_tiles', tiles)
+          window.Store.commit('board/set_selected', [])
           menu.closeMenu()
           grid.drawGrid()
         }
@@ -33,40 +45,57 @@ export default function () {
     actors: {
       addSlot: {
         label: 'Adicionar Slot',
+        condition: () => {
+          const selected = window.Store.state.board.selectedTiles
+          const disabled = window.Store.state.board.disabledTiles
+          const intersection = selected.filter(v => disabled.indexOf(v) >= 0)
+          return intersection.length < 1
+        },
         callback: () => {
           actors.addSlot(grid.tilePositon)
-          window.Store.commit('board/set_selected', [])
-          menu.closeMenu()
-          grid.drawGrid()
         }
       },
       addMonster: {
         label: 'Adicionar Monstro',
         sub: [{
           label: 'Orc',
-          callback: () => { actors.addMonster('orc', grid.tilePositon) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'orc' }) }
         }, {
           label: 'Goblin',
-          callback: () => { actors.addMonster('goblin', grid.tilePositon) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'goblin' }) }
         }, {
           label: 'Fimir',
-          callback: () => { actors.addMonster('fimir', grid.tilePositon) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'fimir' }) }
         }, {
           label: 'Esqueleto',
-          callback: () => { actors.addMonster('skeleton', grid.tilePositon) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'skeleton' }) }
         }, {
           label: 'Zumbi',
-          callback: () => { actors.addMonster('zombie', grid.tilePositon) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'zombie' }) }
         }, {
           label: 'Mumia',
-          callback: () => { actors.addMonster('mummy', grid.tilePositon) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'mummy' }) }
         }, {
           label: 'G. Caos',
-          callback: () => { actors.addMonster('chaos', grid.tilePositon) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'chaos' }) }
         }, {
           label: 'Gárgola',
-          callback: () => { actors.addMonster('gargoyle', grid.tilePositon) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'gargoyle' }) }
         }]
+      }
+    },
+    map: {
+      addBlock: {
+        label: 'Adicionar Bloco',
+        condition: () => {
+          const selected = window.Store.state.board.selectedTiles
+          const disabled = window.Store.state.board.disabledTiles
+          const intersection = selected.filter(v => disabled.indexOf(v) >= 0)
+          return intersection.length < 1
+        },
+        callback: () => {
+          actors.addBlock({ ...grid.tilePositon, type: 'block' })
+        }
       }
     }
   }

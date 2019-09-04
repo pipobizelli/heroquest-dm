@@ -1,6 +1,7 @@
 import Config from '@@/config/env'
 import Grid from './grid'
 import Menu from './menu'
+import Tile from '@@/helpers/tile'
 
 let instance = null
 export default class Actors {
@@ -31,32 +32,73 @@ export default class Actors {
   addSlot ({ x, y }) {
     this.slots++
     const slot = new this.PIXI.Sprite(this.sheet.textures[`${this.slots}.png`])
-    slot.x = x + (16 - slot.width / 2)
-    slot.y = y + (16 - slot.height / 2)
-    slot.buttonMode = true
-
-    this.actorEvents(slot)
-
-    this.wrapper.addChild(slot)
+    this.addActor({
+      x: x + (16 - slot.width / 2),
+      y: y + (16 - slot.height / 2),
+      type: this.slots,
+      width: slot.width,
+      height: slot.height
+    })
   }
 
-  addMonster (type, tilePositon) {
-    this.addActor({
-      ...tilePositon,
-      type: type,
-      width: 33,
-      height: 33
-    })
+  closeMenu () {
     window.Store.commit('board/set_selected', [])
     this.grid.drawGrid()
     this.menu.closeMenu()
   }
 
-  addActor ({ type, width, height, x, y }) {
+  addBlock () {
+    const TileHelper = Tile(window.Store.state.board.map)
+    const tiles = window.Store.state.board.selectedTiles
+    const config = {
+      type: 'block',
+      width: 33,
+      height: 33
+    }
+
+    for (const t in tiles) {
+      const tileObj = TileHelper.getTilebyHandle(tiles[t])
+      const cords = {
+        x: tileObj.c * 33,
+        y: tileObj.l * 33
+      }
+      const n = parseInt(t) + 1
+      const p = parseInt(t) - 1
+      const next = TileHelper.getTileHandle(TileHelper.getNextTile(tiles[t]))
+      const prev = TileHelper.getTileHandle(TileHelper.getPrevTile(tiles[t]))
+      let double = false
+
+      if (tiles[n] && (tiles[n] === next || tiles[n] === prev)) {
+        config.type = 'doubleblock'
+        config.width = 66
+        double = true
+      }
+
+      if (tiles[p] && (tiles[p] === next || tiles[p] === prev)) {
+        const prevTileObj = TileHelper.getFirstTile(tiles[t], tiles[p])
+        cords.x = prevTileObj.c * 33
+        cords.y = prevTileObj.l * 33
+      }
+
+      if (!double) {
+        this.addActor({
+          ...config,
+          ...cords
+        })
+
+        // reset
+        config.type = 'block'
+        config.width = 33
+      }
+    }
+  }
+
+  addActor ({ type, x, y, rotation = 0, width = 33, height = 33, close = true }) {
     const actor = new this.PIXI.Sprite(this.sheet.textures[`${type}.png`])
     actor.label = type
     actor.width = width
     actor.height = height
+    actor.angle = rotation
     actor.x = x
     actor.y = y
     actor.buttonMode = true
@@ -64,6 +106,10 @@ export default class Actors {
     this.actorEvents(actor)
 
     this.wrapper.addChild(actor)
+
+    if (close) {
+      this.closeMenu()
+    }
   }
 
   onStartDrag (event, actor) {

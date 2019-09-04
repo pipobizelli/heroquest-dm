@@ -46,8 +46,6 @@ export default class Grid {
   changeFill ({ tile, color, alpha }) {
     tile.tint = color
     tile.alpha = alpha
-    // tile.x = x
-    // tile.y = y
     return tile
   }
 
@@ -75,7 +73,6 @@ export default class Grid {
   }
 
   drawGrid () {
-    // const sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/spritesheet.json`].spritesheet
     this.clearGrid()
     for (let l = 0; l < BoardConfig.lines; l++) {
       for (let c = 0; c < BoardConfig.columns; c++) {
@@ -93,7 +90,6 @@ export default class Grid {
 
         // EVENTS
         this.tilesEvents({ tile, l, c })
-
         this.grid.addChild(tile)
       }
     }
@@ -108,11 +104,10 @@ export default class Grid {
     let timer
     tile
       .on('click', function () {
-        console.log('tile:', this.x)
         clicks++
         if (clicks === 1) {
           timer = setTimeout(function () {
-            window.Store.commit('board/set_selected', [tile.label])
+            window.Store.commit('board/add_selected', tile.label)
             self.drawGrid()
           }, delay)
         } else {

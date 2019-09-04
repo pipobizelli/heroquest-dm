@@ -13,6 +13,9 @@ export const state = () => ({
 })
 
 export const mutations = {
+  add_selected (state, tile) {
+    state.selectedTiles = [...state.selectedTiles, tile]
+  },
   set_selected (state, tilesArr) {
     state.selectedTiles = tilesArr
   },

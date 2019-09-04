@@ -62,11 +62,16 @@ export default class Menu {
     return group
   }
 
-  drawOption ({ label, callback, sub = false }, index) {
+  drawOption ({ label, callback, sub = false, condition = () => true }, index) {
+    const isEnable = condition()
     const option = new this.PIXI.Container()
     const bg = new this.PIXI.Graphics()
-    const handle = new this.PIXI.Text(label, { font: 'Tahoma', fontSize: 14, fill: colors.black, align: 'left' })
-    const subSymbol = new this.PIXI.Text('▶', { font: 'Tahoma', fontSize: 11, fill: colors.black, align: 'right' })
+    const textColor = isEnable ? colors.black : colors.darkGray
+
+    // label
+    const handle = new this.PIXI.Text(label, { font: 'Tahoma', fontSize: 14, fill: textColor, align: 'left' })
+    const subSymbol = new this.PIXI.Text('▶', { font: 'Tahoma', fontSize: 11, fill: textColor, align: 'right' })
+
     subSymbol.y = 6
     subSymbol.x = this.bgW - 24
 
@@ -82,31 +87,33 @@ export default class Menu {
       option.addChild(subSymbol)
     }
 
-    option
-      .on('pointerover', () => {
-        bg.beginFill(colors.blue, 1)
-        bg.drawRect(0, 0, this.bgW, this.optH)
-        bg.endFill()
-        handle.style.fill = colors.white
-        subSymbol.style.fill = colors.white
+    if (isEnable) {
+      option
+        .on('pointerover', () => {
+          bg.beginFill(colors.blue, 1)
+          bg.drawRect(0, 0, this.bgW, this.optH)
+          bg.endFill()
+          handle.style.fill = textColor
+          subSymbol.style.fill = textColor
 
-        if (!sub) {
-          this.closeSubMenu()
-        }
+          if (!sub) {
+            this.closeSubMenu()
+          }
 
-        if (sub.length) {
-          this.openSubMenu(sub)
-        }
-      })
-      .on('pointerout', () => {
-        bg.clear()
-        handle.style.fill = colors.black
-        subSymbol.style.fill = colors.black
-      })
-      .on('click', function () {
-        callback()
-      })
-      .interactive = true
+          if (sub.length) {
+            this.openSubMenu(sub)
+          }
+        })
+        .on('pointerout', () => {
+          bg.clear()
+          handle.style.fill = textColor
+          subSymbol.style.fill = textColor
+        })
+        .on('click', function () {
+          callback()
+        })
+        .interactive = true
+    }
 
     return option
   }

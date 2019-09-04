@@ -131,13 +131,19 @@ export default (map) => {
     return map.config[n]
   }
 
-  var getTileOffset = (t) => {
-    var tile = getTilebyHandle(t)
-    var dom = document.querySelectorAll(`[data-tile="${tile.l}:${tile.c}"]`)[0]
-    return {
-      x: dom.offsetLeft,
-      y: dom.offsetTop
+  var getFirstTile = (t, n) => {
+    const t1 = getTilebyHandle(t)
+    const t2 = getTilebyHandle(n)
+
+    if (t1.l < t2.l) {
+      return t1
     }
+
+    if (t1.c < t2.c) {
+      return t1
+    }
+
+    return t2
   }
 
   var isTileInLine = (t, n) => {
@@ -180,7 +186,7 @@ export default (map) => {
     getDiagDownLeftTile,
     getDiagDownRightTile,
     getTileConfig,
-    getTileOffset,
+    getFirstTile,
     isTileInLine,
     isTileInColumn,
     isTileInCross,
