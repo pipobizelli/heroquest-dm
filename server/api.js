@@ -6,17 +6,17 @@ import { GetCharacter, ListCharacter } from '../api/controllers/characters'
 import { ListMonsters, GetMonster } from '../api/controllers/monsters'
 import { ListFurniture, GetFurniture } from '../api/controllers/furniture'
 import BodyParser from 'body-parser'
-import Spritesheet from '../data/spritesheet.json'
+import Editor from '../data/editor.json'
 
 const app = express()
 app.use(BodyParser.json())
 app.use(BodyParser.urlencoded({ extended: true }))
-// Spritesheet ==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--=
-app.get('/spritesheet.json', (req, res) => {
-  res.json(Spritesheet)
+// Spritesheet Editor ==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--=
+app.get('/editor.json', (req, res) => {
+  res.json(Editor)
 })
-app.get('/spritesheet.png', (req, res) => {
-  res.redirect('/spritesheet.png')
+app.get('/editor.png', (req, res) => {
+  res.redirect('/editor.png')
 })
 
 // Session ==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--=

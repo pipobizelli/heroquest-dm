@@ -15,7 +15,7 @@ export async function canvasInit () {
   })
 
   PIXI.Loader.shared
-    .add(`${Config.paths.base_url}/api/spritesheet.json`)
+    .add(`${Config.paths.base_url}/api/editor.json`)
     .load(async () => {
       const grid = new Grid()
       const menu = new Menu()

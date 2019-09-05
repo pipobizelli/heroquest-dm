@@ -20,7 +20,7 @@ export default class Actors {
     this.wrapper = new this.PIXI.Container()
     this.wrapper.x = 6
     this.wrapper.y = 6
-    this.sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/spritesheet.json`].spritesheet
+    this.sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/editor.json`].spritesheet
     this.TileHelper = Tile(window.Store.state.board.map)
     this.slots = 0
     return this
@@ -105,11 +105,12 @@ export default class Actors {
       x: tileObj.c * 33,
       y: tileObj.l * 33,
       height: 33,
-      width: 66
+      width: 66,
+      drag: false
     })
   }
 
-  addActor ({ type, x, y, anchorX = 0, anchorY = 0, rotation = 0, width = 33, height = 33, close = true }) {
+  addActor ({ type, x, y, anchorX = 0, anchorY = 0, rotation = 0, width = 33, height = 33, drag = true, close = true }) {
     const actor = new this.PIXI.Sprite(this.sheet.textures[`${type}.png`])
     actor.label = type
     actor.width = width
@@ -118,15 +119,26 @@ export default class Actors {
     actor.angle = rotation
     actor.x = x
     actor.y = y
-    actor.buttonMode = true
+    actor.buttonMode = drag
 
-    this.actorEvents(actor)
+    if (drag) {
+      this.actorDrag(actor)
+    }
 
     this.wrapper.addChild(actor)
 
     if (close) {
       this.closeMenu()
     }
+  }
+
+  actorDrag (actor) {
+    actor
+      .on('pointerdown', (event) => this.onStartDrag(event, actor))
+      .on('pointermove', () => this.onMoveDrag(actor))
+      .on('pointerupoutside', (event) => this.onStopDrag(event, actor))
+      .on('pointerup', (event) => this.onStopDrag(event, actor))
+      .interactive = true
   }
 
   onStartDrag (event, actor) {
@@ -158,14 +170,5 @@ export default class Actors {
     actor.dragging = false
     // set the interaction data to null
     actor.data = null
-  }
-
-  actorEvents (actor) {
-    actor
-      .on('pointerdown', (event) => this.onStartDrag(event, actor))
-      .on('pointermove', () => this.onMoveDrag(actor))
-      .on('pointerupoutside', (event) => this.onStopDrag(event, actor))
-      .on('pointerup', (event) => this.onStopDrag(event, actor))
-      .interactive = true
   }
 }

@@ -22,7 +22,7 @@ export default class Grid {
     this.grid.y = 6
     this.grid.label = 'grid'
     this.menu = new Menu()
-    this.sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/spritesheet.json`].spritesheet
+    this.sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/editor.json`].spritesheet
     return this
   }
 
