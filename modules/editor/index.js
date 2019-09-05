@@ -7,7 +7,8 @@ import Actors from '@@/modules/editor/actors'
 export async function canvasInit () {
   const PIXI = await import('pixi.js')
   const canvasApp = new PIXI.Application({ width: BoardConfig.width, height: BoardConfig.height, transparent: true })
-  document.body.appendChild(canvasApp.view)
+  // document.body.appendChild(canvasApp.view)
+  document.getElementById('editor').appendChild(canvasApp.view)
   canvasApp.view.addEventListener('contextmenu', (e) => {
     window.wasRightClick = true
     e.preventDefault()

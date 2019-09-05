@@ -147,11 +147,15 @@ export default (map) => {
   }
 
   var isTileInLine = (t, n) => {
-    return getTilebyHandle(t).l === getTilebyHandle(n).l
+    const first = getFirstTile(t, n)
+    const sec = getTileHandle(first) === t ? getTilebyHandle(n) : getTilebyHandle(t)
+    return first.c === sec.c - 1 && first.l === sec.l
   }
 
   var isTileInColumn = (t, n) => {
-    return getTilebyHandle(t).c === getTilebyHandle(n).c
+    const first = getFirstTile(t, n)
+    const sec = getTileHandle(first) === t ? getTilebyHandle(n) : getTilebyHandle(t)
+    return first.l === sec.l - 1 && first.c === sec.c
   }
 
   var isTileInCross = (t, n) => {

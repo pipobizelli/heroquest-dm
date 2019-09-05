@@ -21,6 +21,7 @@ export default class Actors {
     this.wrapper.x = 6
     this.wrapper.y = 6
     this.sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/spritesheet.json`].spritesheet
+    this.TileHelper = Tile(window.Store.state.board.map)
     this.slots = 0
     return this
   }
@@ -48,7 +49,6 @@ export default class Actors {
   }
 
   addBlock () {
-    const TileHelper = Tile(window.Store.state.board.map)
     const tiles = window.Store.state.board.selectedTiles
     const config = {
       type: 'block',
@@ -57,17 +57,17 @@ export default class Actors {
     }
 
     for (const t in tiles) {
-      const tileObj = TileHelper.getTilebyHandle(tiles[t])
+      const tileObj = this.TileHelper.getTilebyHandle(tiles[t])
+      const n = parseInt(t) + 1
+      const p = parseInt(t) - 1
+      const next = this.TileHelper.getTileHandle(this.TileHelper.getNextTile(tiles[t]))
+      const prev = this.TileHelper.getTileHandle(this.TileHelper.getPrevTile(tiles[t]))
       const cords = {
         x: tileObj.c * 33,
         y: tileObj.l * 33
       }
-      const n = parseInt(t) + 1
-      const p = parseInt(t) - 1
-      const next = TileHelper.getTileHandle(TileHelper.getNextTile(tiles[t]))
-      const prev = TileHelper.getTileHandle(TileHelper.getPrevTile(tiles[t]))
-      let double = false
 
+      let double = false
       if (tiles[n] && (tiles[n] === next || tiles[n] === prev)) {
         config.type = 'doubleblock'
         config.width = 66
@@ -75,7 +75,7 @@ export default class Actors {
       }
 
       if (tiles[p] && (tiles[p] === next || tiles[p] === prev)) {
-        const prevTileObj = TileHelper.getFirstTile(tiles[t], tiles[p])
+        const prevTileObj = this.TileHelper.getFirstTile(tiles[t], tiles[p])
         cords.x = prevTileObj.c * 33
         cords.y = prevTileObj.l * 33
       }
@@ -93,11 +93,28 @@ export default class Actors {
     }
   }
 
-  addActor ({ type, x, y, rotation = 0, width = 33, height = 33, close = true }) {
+  addDoor () {
+    const t1 = window.Store.state.board.selectedTiles[0]
+    const t2 = window.Store.state.board.selectedTiles[1]
+    const tileObj = this.TileHelper.getFirstTile(t1, t2)
+    this.addActor({
+      type: 'door',
+      rotation: this.TileHelper.isTileInColumn(t1, t2) ? 90 : 0,
+      anchorX: this.TileHelper.isTileInColumn(t1, t2) ? 0 : 0,
+      anchorY: this.TileHelper.isTileInColumn(t1, t2) ? 1 : 0,
+      x: tileObj.c * 33,
+      y: tileObj.l * 33,
+      height: 33,
+      width: 66
+    })
+  }
+
+  addActor ({ type, x, y, anchorX = 0, anchorY = 0, rotation = 0, width = 33, height = 33, close = true }) {
     const actor = new this.PIXI.Sprite(this.sheet.textures[`${type}.png`])
     actor.label = type
     actor.width = width
     actor.height = height
+    actor.anchor.set(anchorX, anchorY)
     actor.angle = rotation
     actor.x = x
     actor.y = y

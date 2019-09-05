@@ -1,11 +1,13 @@
 import Grid from '@@/modules/editor/grid'
 import Menu from '@@/modules/editor/menu'
 import Actors from '@@/modules/editor/actors'
+import Tile from '@@/helpers/tile'
 
 export default function () {
   const grid = new Grid()
   const menu = new Menu()
   const actors = new Actors()
+  const TileHelper = Tile(window.Store.state.board.map)
 
   return {
     tiles: {
@@ -94,7 +96,19 @@ export default function () {
           return intersection.length < 1
         },
         callback: () => {
-          actors.addBlock({ ...grid.tilePositon, type: 'block' })
+          actors.addBlock()
+        }
+      },
+      addDoor: {
+        label: 'Adicionar Porta',
+        condition: () => {
+          const selected = window.Store.state.board.selectedTiles
+          return selected.length === 2 &&
+          (TileHelper.isTileInLine(selected[0], selected[1]) ||
+          TileHelper.isTileInColumn(selected[0], selected[1]))
+        },
+        callback: () => {
+          actors.addDoor()
         }
       }
     }
