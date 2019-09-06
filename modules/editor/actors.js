@@ -1,3 +1,4 @@
+import BoardConfig from '@@/data/board.json'
 import Config from '@@/config/env'
 import Grid from './grid'
 import Menu from './menu'
@@ -18,8 +19,8 @@ export default class Actors {
     this.grid = new Grid()
     this.menu = new Menu()
     this.wrapper = new this.PIXI.Container()
-    this.wrapper.x = 6
-    this.wrapper.y = 6
+    this.wrapper.x = BoardConfig.margin
+    this.wrapper.y = BoardConfig.margin
     this.sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/editor.json`].spritesheet
     this.TileHelper = Tile(window.Store.state.board.map)
     this.slots = 0
@@ -110,6 +111,25 @@ export default class Actors {
     })
   }
 
+  addFurniture (type, y = 0, x = 0) {
+    const tiles = window.Store.state.board.selectedTiles
+    const tileObj = this.TileHelper.getTilebyHandle(tiles[0])
+    const furniture = new this.PIXI.Sprite(this.sheet.textures[`${type}.png`])
+    furniture.label = type
+    furniture.x = tileObj.c * 33 + x
+    furniture.y = tileObj.l * 33 + y
+
+    furniture
+      .on('pointerdown', (event) => this.onStartDrag(event, furniture))
+      .on('pointermove', () => this.onMoveDrag(furniture))
+      .on('pointerupoutside', (event) => this.onStopDrag(event, { actor: furniture, y, x }))
+      .on('pointerup', (event) => this.onStopDrag(event, { actor: furniture, y, x }))
+      .interactive = true
+
+    this.wrapper.addChild(furniture)
+    this.closeMenu()
+  }
+
   addActor ({ type, x, y, anchorX = 0, anchorY = 0, rotation = 0, width = 33, height = 33, drag = true, close = true }) {
     const actor = new this.PIXI.Sprite(this.sheet.textures[`${type}.png`])
     actor.label = type
@@ -136,8 +156,13 @@ export default class Actors {
     actor
       .on('pointerdown', (event) => this.onStartDrag(event, actor))
       .on('pointermove', () => this.onMoveDrag(actor))
-      .on('pointerupoutside', (event) => this.onStopDrag(event, actor))
-      .on('pointerup', (event) => this.onStopDrag(event, actor))
+      .on('pointerupoutside', (event) => this.onStopDrag(event, { actor, x: 0, y: 0 }))
+      .on('pointerup', (event) => this.onStopDrag(event, { actor, x: 0, y: 0 }))
+      .on('rightdown', async function (e) {
+        const x = e.data.global.x
+        const y = e.data.global.y
+        this.menu.openMenu({ x, y })
+      })
       .interactive = true
   }
 
@@ -159,13 +184,13 @@ export default class Actors {
     }
   }
 
-  onStopDrag (event, actor) {
-    const gridX = parseInt(event.data.global.x) - 6
-    const gridY = parseInt(event.data.global.y) - 6
+  onStopDrag (event, { actor, y = 0, x = 0 }) {
+    const gridX = parseInt(event.data.global.x) - BoardConfig.margin
+    const gridY = parseInt(event.data.global.y) - BoardConfig.margin
     const diffX = gridX % 33
     const diffY = gridY % 33
-    actor.x = gridX - diffX
-    actor.y = gridY - diffY
+    actor.x = (gridX - diffX) + x
+    actor.y = (gridY - diffY) + y
     actor.alpha = 1
     actor.dragging = false
     // set the interaction data to null

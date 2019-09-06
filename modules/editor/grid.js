@@ -18,8 +18,8 @@ export default class Grid {
   async setup () {
     this.PIXI = await import('pixi.js')
     this.grid = new this.PIXI.Container()
-    this.grid.x = 6
-    this.grid.y = 6
+    this.grid.x = BoardConfig.margin
+    this.grid.y = BoardConfig.margin
     this.grid.label = 'grid'
     this.menu = new Menu()
     this.sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/editor.json`].spritesheet
@@ -67,7 +67,7 @@ export default class Grid {
     bleft.x = 0
     bleft.y = 0
 
-    this.grid.parent.addChild(btop, bright, bbottom, bleft)
+    this.grid.parent.addChild(bleft, btop, bright, bbottom)
 
     return this
   }
@@ -107,7 +107,11 @@ export default class Grid {
         clicks++
         if (clicks === 1) {
           timer = setTimeout(function () {
-            window.Store.commit('board/add_selected', tile.label)
+            if (window.Store.state.board.selectedTiles.indexOf(tile.label) < 0) {
+              window.Store.commit('board/add_selected', tile.label)
+            } else {
+              window.Store.commit('board/remove_selected', tile.label)
+            }
             self.drawGrid()
           }, delay)
         } else {

@@ -45,7 +45,7 @@ export default function () {
       }
     },
     actors: {
-      addSlot: {
+      slots: {
         label: 'Adicionar Slot',
         condition: () => {
           const selected = window.Store.state.board.selectedTiles
@@ -57,7 +57,7 @@ export default function () {
           actors.addSlot(grid.tilePositon)
         }
       },
-      addMonster: {
+      monsters: {
         label: 'Adicionar Monstro',
         sub: [{
           label: 'Orc',
@@ -87,7 +87,7 @@ export default function () {
       }
     },
     map: {
-      addBlock: {
+      blocks: {
         label: 'Adicionar Bloco',
         condition: () => {
           const selected = window.Store.state.board.selectedTiles
@@ -99,7 +99,7 @@ export default function () {
           actors.addBlock()
         }
       },
-      addDoor: {
+      doors: {
         label: 'Adicionar Porta',
         condition: () => {
           const selected = window.Store.state.board.selectedTiles
@@ -110,6 +110,43 @@ export default function () {
         callback: () => {
           actors.addDoor()
         }
+      },
+      furniture: {
+        label: 'Adicionar Móvel',
+        sub: [{
+          label: 'Armário',
+          callback: () => { actors.addFurniture('cupboard', 0, 2) }
+        }, {
+          label: 'Baú',
+          callback: () => { actors.addFurniture('chest', 4, 0) }
+        }, {
+          label: 'Escrivaninha',
+          callback: () => { actors.addFurniture('alchemistsbench', 3, 4) }
+        }, {
+          label: 'Estante de Livros',
+          callback: () => { actors.addFurniture('bookcase') }
+        }, {
+          label: 'Lareira',
+          callback: () => { actors.addFurniture('fireplace', 1, 1) }
+        }, {
+          label: 'Mesa',
+          callback: () => { actors.addFurniture('table', 4, 3) }
+        }, {
+          label: 'Mesa do Livro',
+          callback: () => { actors.addFurniture('sorcererstable', 3, 2) }
+        }, {
+          label: 'Rack de Armas',
+          callback: () => { actors.addFurniture('weaponsrack') }
+        }, {
+          label: 'Tortura',
+          callback: () => { actors.addFurniture('rack', 1, 2) }
+        }, {
+          label: 'Trono',
+          callback: () => { actors.addFurniture('throne', 1, 2) }
+        }, {
+          label: 'Tumba',
+          callback: () => { actors.addFurniture('tomb', 4, 3) }
+        }]
       }
     }
   }

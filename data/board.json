@@ -1,6 +1,7 @@
 {
-  "width": 869,
-  "height": 638,
+  "width": 865,
+  "height": 634,
+  "margin": 4,
   "lines": 19,
   "columns": 26,
   "tile": {

@@ -110,7 +110,9 @@ export default class Menu {
           subSymbol.style.fill = textColor
         })
         .on('click', function () {
-          callback()
+          if (!sub.length) {
+            callback()
+          }
         })
         .interactive = true
     }
@@ -175,11 +177,12 @@ export default class Menu {
   drawSubMenu (optionsArr) {
     const x = this.menuX + this.bgW
     const y = this.menuY
+    const height = (optionsArr.length * this.optH) + 10
     const menuWrapper = this.drawMenuBg({
       x: x > (BoardConfig.width - this.bgW) ? x - (this.bgW * 2) : x,
-      y: y > (BoardConfig.height - this.bgH) ? y - this.bgH : y,
+      y: y > (BoardConfig.height - height) ? y - (BoardConfig.height % height) : y,
       width: this.bgW,
-      height: (optionsArr.length * this.optH) + 10
+      height: height
     })
     const group = new this.PIXI.Container()
     group.y = 5
