@@ -120,14 +120,21 @@ export default class Actors {
     furniture.y = tileObj.l * 33 + y
 
     furniture
-      .on('pointerdown', (event) => this.onStartDrag(event, furniture))
-      .on('pointermove', () => this.onMoveDrag(furniture))
-      .on('pointerupoutside', (event) => this.onStopDrag(event, { actor: furniture, y, x }))
-      .on('pointerup', (event) => this.onStopDrag(event, { actor: furniture, y, x }))
+      .on('mousedown', (event) => this.onStartDrag(event, furniture))
+      .on('mousemove', () => this.onMoveDrag(furniture))
+      .on('mouseupoutside', (event) => this.onStopDrag(event, { actor: furniture, y, x }))
+      .on('mouseup', (event) => this.onStopDrag(event, { actor: furniture, y, x }))
+      .on('rightdown', (event) => {
+        const x = furniture.x + 17
+        const y = furniture.y + 17
+        this.menu.openActionsMenu({ x, y, target: furniture })
+      })
       .interactive = true
 
     this.wrapper.addChild(furniture)
     this.closeMenu()
+
+    return furniture
   }
 
   addActor ({ type, x, y, anchorX = 0, anchorY = 0, rotation = 0, width = 33, height = 33, drag = true, close = true }) {
@@ -158,11 +165,6 @@ export default class Actors {
       .on('pointermove', () => this.onMoveDrag(actor))
       .on('pointerupoutside', (event) => this.onStopDrag(event, { actor, x: 0, y: 0 }))
       .on('pointerup', (event) => this.onStopDrag(event, { actor, x: 0, y: 0 }))
-      .on('rightdown', async function (e) {
-        const x = e.data.global.x
-        const y = e.data.global.y
-        this.menu.openMenu({ x, y })
-      })
       .interactive = true
   }
 

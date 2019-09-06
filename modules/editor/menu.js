@@ -1,6 +1,7 @@
 import BoardConfig from '@@/data/board.json'
 import Grid from './grid'
 import Options from './options'
+import Actions from './actions'
 import { colors } from './colors'
 
 let instance = null
@@ -18,6 +19,7 @@ export default class Menu {
     this.Filters = await import('pixi-filters')
     this.grid = new Grid()
     this.options = Options()
+    this.actions = Actions
 
     this.wrapper = new this.PIXI.Container()
     this.wrapper.x = 0
@@ -31,12 +33,7 @@ export default class Menu {
     this.groupsCount = []
     this.optH = 25
     this.bgW = 170
-    const groups = Object.values(this.options)
-    let options = 0
-    for (const g in groups) {
-      options += Object.values(groups[g]).length
-    }
-    this.bgH = (options * this.optH) + (groups.length * 10)
+    this.bgH = 0
 
     return this
   }
@@ -147,9 +144,16 @@ export default class Menu {
     return menuWrapper
   }
 
-  drawMenu ({ x, y }) {
+  drawMenu ({ x, y, options = this.options }) {
     this.menuX = x > (BoardConfig.width - this.bgW) ? x - this.bgW : x
     this.menuY = y > (BoardConfig.height - this.bgH) ? y - this.bgH : y
+
+    const groups = Object.values(options)
+    let optsLength = 0
+    for (const g in groups) {
+      optsLength += Object.values(groups[g]).length
+    }
+    this.bgH = (optsLength * this.optH) + (groups.length * 10)
 
     const menuWrapper = this.drawMenuBg({
       x: this.menuX,
@@ -159,7 +163,6 @@ export default class Menu {
     })
 
     this.groupsCount = []
-    const groups = Object.values(this.options)
     for (const g in groups) {
       const opts = Object.values(groups[g])
       const group = this.drawGroup(opts.length, parseInt(g))
@@ -231,6 +234,10 @@ export default class Menu {
   openSubMenu (sub) {
     this.closeSubMenu()
     this.subWrapper.addChild(this.drawSubMenu(sub))
+  }
+
+  openActionsMenu ({ x, y, target }) {
+    this.wrapper.addChild(this.drawArea(), this.drawMenu({ x, y, options: this.actions(target) }), this.subWrapper)
   }
 
   closeSubMenu () {
