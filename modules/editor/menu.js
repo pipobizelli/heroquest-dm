@@ -33,9 +33,22 @@ export default class Menu {
     this.groupsCount = []
     this.optH = 25
     this.bgW = 170
-    this.bgH = 0
+    // this.bgH = 0
+
+    this.setHeight(this.options)
 
     return this
+  }
+
+  setHeight (options) {
+    const groups = Object.values(options)
+    let optsLength = 0
+    for (const g in groups) {
+      optsLength += Object.values(groups[g]).length
+    }
+    this.bgH = (optsLength * this.optH) + (groups.length * 10)
+
+    return groups
   }
 
   get data () {
@@ -44,7 +57,7 @@ export default class Menu {
 
   drawGroup (options, index) {
     const group = new this.PIXI.Container()
-    const prevs = this.groupsCount.reduce((a, b) => a + b, 0)
+    const prevGroups = this.groupsCount.reduce((a, b) => a + b, 0)
 
     if (index > 0) {
       const bg = new this.PIXI.Graphics()
@@ -54,7 +67,7 @@ export default class Menu {
       group.addChild(bg)
     }
 
-    group.y = ((prevs * this.optH) + 10 * index) + 5
+    group.y = ((prevGroups * this.optH) + 10 * index) + 5
 
     return group
   }
@@ -98,7 +111,8 @@ export default class Menu {
           }
 
           if (sub.length) {
-            this.openSubMenu(sub)
+            const totalY = option.parent.y + option.y
+            this.openSubMenu(sub, totalY)
           }
         })
         .on('pointerout', () => {
@@ -148,13 +162,7 @@ export default class Menu {
     this.menuX = x > (BoardConfig.width - this.bgW) ? x - this.bgW : x
     this.menuY = y > (BoardConfig.height - this.bgH) ? y - this.bgH : y
 
-    const groups = Object.values(options)
-    let optsLength = 0
-    for (const g in groups) {
-      optsLength += Object.values(groups[g]).length
-    }
-    this.bgH = (optsLength * this.optH) + (groups.length * 10)
-
+    const groups = this.setHeight(options)
     const menuWrapper = this.drawMenuBg({
       x: Math.round(this.menuX),
       y: Math.round(this.menuY),
@@ -177,13 +185,14 @@ export default class Menu {
     return menuWrapper
   }
 
-  drawSubMenu (optionsArr) {
+  drawSubMenu (optionsArr, pY = 0) {
     const x = this.menuX + this.bgW
-    const y = this.menuY
+    const y = this.menuY + pY
+    // const y = pY
     const height = (optionsArr.length * this.optH) + 10
     const menuWrapper = this.drawMenuBg({
       x: x > (BoardConfig.width - this.bgW) ? Math.round(x - (this.bgW * 2)) : Math.round(x),
-      y: y > (BoardConfig.height - height) ? Math.round(y - (BoardConfig.height % height)) : Math.round(y),
+      y: y > (BoardConfig.height - height) ? Math.round(BoardConfig.height - height) - this.optH : Math.round(y),
       width: this.bgW,
       height: height
     })
@@ -231,9 +240,9 @@ export default class Menu {
     this.wrapper.removeChildren()
   }
 
-  openSubMenu (sub) {
+  openSubMenu (sub, y) {
     this.closeSubMenu()
-    this.subWrapper.addChild(this.drawSubMenu(sub))
+    this.subWrapper.addChild(this.drawSubMenu(sub, y))
   }
 
   openActionsMenu ({ x, y, target }) {

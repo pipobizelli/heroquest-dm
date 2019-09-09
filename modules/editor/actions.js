@@ -9,16 +9,19 @@ export default function (target) {
     actors: {
       rotate: {
         label: 'Girar',
+        condition: () => {
+          return target.type !== 'actor'
+        },
         sub: [
           {
-            label: '↻ 90º',
+            label: '↻ +90º',
             callback: () => {
               target.angle += 90
               menu.closeMenu()
               grid.drawGrid()
             }
           }, {
-            label: '↺ 90º',
+            label: '↺ -90º',
             callback: () => {
               target.angle -= 90
               menu.closeMenu()
@@ -26,6 +29,14 @@ export default function (target) {
             }
           }
         ]
+      },
+      remove: {
+        label: '✖ Remover',
+        callback: () => {
+          target.parent.removeChild(target)
+          menu.closeMenu()
+          grid.drawGrid()
+        }
       }
     }
   }

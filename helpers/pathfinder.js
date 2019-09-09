@@ -73,7 +73,7 @@ export default (map) => {
     return arr
   }
 
-  var getPath = (start, end, path) => {
+  var getPath = (start, end, path = []) => {
     // F = G + H
     // G = 10
     // H = getShortPath(start, end) * 10

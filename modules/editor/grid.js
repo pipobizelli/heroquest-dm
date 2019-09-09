@@ -23,6 +23,17 @@ export default class Grid {
     this.grid.label = 'grid'
     this.menu = new Menu()
     this.sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/editor.json`].spritesheet
+    this.shift = false
+    document.addEventListener('keydown', (e) => {
+      // SHIFT
+      if (e.keyCode === 16) {
+        this.shift = true
+      }
+    })
+
+    document.addEventListener('keyup', (e) => {
+      this.shift = false
+    })
     return this
   }
 
@@ -108,11 +119,19 @@ export default class Grid {
         if (clicks === 1) {
           timer = setTimeout(function () {
             if (window.Store.state.board.selectedTiles.indexOf(tile.label) < 0) {
-              window.Store.commit('board/add_selected', tile.label)
+              if (window.Store.state.board.selectedTiles.length > 0 && self.shift) {
+                const l = window.Store.state.board.selectedTiles.length - 1
+                const last = window.Store.state.board.selectedTiles[l]
+                const path = Pathfinder(window.Store.state.board.map).getPath(tile.label, last)
+                window.Store.commit('board/set_selected', path)
+              } else {
+                window.Store.commit('board/add_selected', tile.label)
+              }
+              self.drawGrid()
             } else {
               window.Store.commit('board/remove_selected', tile.label)
+              self.drawGrid()
             }
-            self.drawGrid()
           }, delay)
         } else {
           clearTimeout(timer)

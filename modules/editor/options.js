@@ -61,28 +61,28 @@ export default function () {
         label: 'Adicionar Monstro',
         sub: [{
           label: 'Orc',
-          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'orc' }) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'orc' }) }
         }, {
           label: 'Goblin',
-          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'goblin' }) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'goblin' }) }
         }, {
           label: 'Fimir',
-          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'fimir' }) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'fimir' }) }
         }, {
           label: 'Esqueleto',
-          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'skeleton' }) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'skeleton' }) }
         }, {
           label: 'Zumbi',
-          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'zombie' }) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'zombie' }) }
         }, {
           label: 'Mumia',
-          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'mummy' }) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'mummy' }) }
         }, {
           label: 'G. Caos',
-          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'chaos' }) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'chaos' }) }
         }, {
           label: 'Gárgola',
-          callback: () => { actors.addActor({ ...grid.tilePositon, type: 'gargoyle' }) }
+          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'gargoyle' }) }
         }]
       }
     },
@@ -111,41 +111,67 @@ export default function () {
           actors.addDoor()
         }
       },
+      secreetdoors: {
+        label: 'Add P. Secreta',
+        condition: () => {
+          return window.Store.state.board.selectedTiles.length === 1
+        },
+        callback: () => {
+          actors.addComponent({ label: 'secretdoor', type: 'furniture', y: 0, x: 7 })
+        }
+      },
       furniture: {
         label: 'Adicionar Móvel',
         sub: [{
           label: 'Armário',
-          callback: () => { actors.addFurniture('cupboard', 0, 2) }
+          callback: () => { actors.addComponent({ label: 'cupboard', type: 'furniture', y: 0, x: 2 }) }
         }, {
           label: 'Baú',
-          callback: () => { actors.addFurniture('chest', 4, 0) }
+          callback: () => { actors.addComponent({ label: 'chest', type: 'furniture', y: 4, x: 0 }) }
         }, {
           label: 'Escrivaninha',
-          callback: () => { actors.addFurniture('alchemistsbench', 3, 4) }
+          callback: () => { actors.addComponent({ label: 'alchemistsbench', type: 'furniture', y: 3, x: 4 }) }
         }, {
           label: 'Estante de Livros',
-          callback: () => { actors.addFurniture('bookcase') }
+          callback: () => { actors.addComponent({ label: 'bookcase', type: 'furniture' }) }
         }, {
           label: 'Lareira',
-          callback: () => { actors.addFurniture('fireplace', 1, 1) }
+          callback: () => { actors.addComponent({ label: 'fireplace', type: 'furniture', y: 1, x: 1 }) }
         }, {
           label: 'Mesa',
-          callback: () => { actors.addFurniture('table', 5, 3) }
+          callback: () => { actors.addComponent({ label: 'table', type: 'furniture', y: 5, x: 3 }) }
         }, {
           label: 'Mesa do Livro',
-          callback: () => { actors.addFurniture('sorcererstable', 3, 2) }
+          callback: () => { actors.addComponent({ label: 'sorcererstable', type: 'furniture', y: 3, x: 2 }) }
         }, {
           label: 'Rack de Armas',
-          callback: () => { actors.addFurniture('weaponsrack') }
+          callback: () => { actors.addComponent({ label: 'weaponsrack', type: 'furniture' }) }
         }, {
           label: 'Tortura',
-          callback: () => { actors.addFurniture('rack', 1, 2) }
+          callback: () => { actors.addComponent({ label: 'rack', type: 'furniture', y: 1, x: 2 }) }
         }, {
           label: 'Trono',
-          callback: () => { actors.addFurniture('throne', 1, 2) }
+          callback: () => { actors.addComponent({ label: 'throne', type: 'furniture', y: 1, x: 2 }) }
         }, {
           label: 'Tumba',
-          callback: () => { actors.addFurniture('tomb', 4, 3) }
+          callback: () => { actors.addComponent({ label: 'tomb', type: 'furniture', y: 4, x: 3 }) }
+        }]
+      },
+      trap: {
+        label: 'Adicionar Armadilha',
+        condition: () => {
+          return window.Store.state.board.selectedTiles.length === 1
+        },
+        sub: [{
+          label: 'Lanças',
+          callback: () => {
+            actors.addComponent({ label: 'speartrap' })
+          }
+        }, {
+          label: 'Poço',
+          callback: () => {
+            actors.addComponent({ label: 'pittrap', y: 3, x: 4 })
+          }
         }]
       }
     }

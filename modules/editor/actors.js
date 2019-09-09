@@ -24,6 +24,8 @@ export default class Actors {
     this.sheet = this.PIXI.Loader.shared.resources[`${Config.paths.base_url}/api/editor.json`].spritesheet
     this.TileHelper = Tile(window.Store.state.board.map)
     this.slots = 0
+    this.pX = 16
+    this.pY = 16
     return this
   }
 
@@ -37,7 +39,8 @@ export default class Actors {
     this.addActor({
       x: x + (16 - slot.width / 2),
       y: y + (16 - slot.height / 2),
-      type: this.slots,
+      label: this.slots,
+      type: 'slot',
       width: slot.width,
       height: slot.height
     })
@@ -52,7 +55,7 @@ export default class Actors {
   addBlock () {
     const tiles = window.Store.state.board.selectedTiles
     const config = {
-      type: 'block',
+      label: 'block',
       width: 33,
       height: 33
     }
@@ -70,7 +73,7 @@ export default class Actors {
 
       let double = false
       if (tiles[n] && (tiles[n] === next || tiles[n] === prev)) {
-        config.type = 'doubleblock'
+        config.label = 'doubleblock'
         config.width = 66
         double = true
       }
@@ -98,8 +101,8 @@ export default class Actors {
     const t1 = window.Store.state.board.selectedTiles[0]
     const t2 = window.Store.state.board.selectedTiles[1]
     const tileObj = this.TileHelper.getFirstTile(t1, t2)
-    this.addActor({
-      type: 'door',
+    const door = this.addActor({
+      label: 'door',
       rotation: this.TileHelper.isTileInColumn(t1, t2) ? 90 : 0,
       anchorX: this.TileHelper.isTileInColumn(t1, t2) ? 0 : 0,
       anchorY: this.TileHelper.isTileInColumn(t1, t2) ? 1 : 0,
@@ -107,33 +110,30 @@ export default class Actors {
       y: tileObj.l * 33,
       height: 33,
       width: 66,
-      drag: false
+      events: false
     })
+
+    this.closeMenu()
+
+    return door
   }
 
-  addFurniture (type, y = 0, x = 0) {
+  addComponent ({ label, type = 'actor', y = 0, x = 0 }) {
     const tiles = window.Store.state.board.selectedTiles
     const tileObj = this.TileHelper.getTilebyHandle(tiles[0])
-    const furniture = new this.PIXI.Sprite(this.sheet.textures[`${type}.png`])
-    const pX = 16
-    const pY = 16
+    const furniture = new this.PIXI.Sprite(this.sheet.textures[`${label}.png`])
 
-    furniture.label = type
-    furniture.metadata = { x, y }
-    furniture.pivot = new this.PIXI.Point(pX - x, pY - y)
-    furniture.x = Math.round(tileObj.c * 33) + pX
-    furniture.y = Math.round(tileObj.l * 33) + pY
-
-    // const pivot = new this.PIXI.Graphics()
-    // pivot.beginFill(0xDE3249, 1)
-    // pivot.drawCircle(furniture.x, furniture.y, 2)
-    // pivot.endFill()
+    furniture.label = label
+    furniture.type = type
+    furniture.pivot = new this.PIXI.Point(this.pX - x, this.pY - y)
+    furniture.x = Math.round(tileObj.c * 33) + this.pX
+    furniture.y = Math.round(tileObj.l * 33) + this.pY
 
     furniture
       .on('mousedown', (event) => this.onStartDrag(event, furniture))
       .on('mousemove', () => this.onMoveDrag(furniture))
-      .on('mouseupoutside', (event) => this.onStopDrag(event, { actor: furniture, x: pX, y: pY }))
-      .on('mouseup', (event) => this.onStopDrag(event, { actor: furniture, x: pX, y: pY }))
+      .on('mouseupoutside', (event) => this.onStopDrag(event, { actor: furniture, x: this.pX, y: this.pY }))
+      .on('mouseup', (event) => this.onStopDrag(event, { actor: furniture, x: this.pX, y: this.pY }))
       .on('rightdown', (event) => {
         const x = furniture.x
         const y = furniture.y
@@ -147,19 +147,20 @@ export default class Actors {
     return furniture
   }
 
-  addActor ({ type, x, y, anchorX = 0, anchorY = 0, rotation = 0, width = 33, height = 33, drag = true, close = true }) {
-    const actor = new this.PIXI.Sprite(this.sheet.textures[`${type}.png`])
-    actor.label = type
+  addActor ({ label, x, y, type = 'actor', anchorX = 0, anchorY = 0, rotation = 0, width = 33, height = 33, events = true, close = true }) {
+    const actor = new this.PIXI.Sprite(this.sheet.textures[`${label}.png`])
+    actor.type = type
+    actor.label = label
     actor.width = width
     actor.height = height
     actor.anchor.set(anchorX, anchorY)
     actor.angle = rotation
     actor.x = x
     actor.y = y
-    actor.buttonMode = drag
+    actor.buttonMode = events
 
-    if (drag) {
-      this.actorDrag(actor)
+    if (events) {
+      this.actorEvents(actor)
     }
 
     this.wrapper.addChild(actor)
@@ -171,13 +172,20 @@ export default class Actors {
     return actor
   }
 
-  actorDrag (actor) {
+  actorEvents (actor) {
     actor
       .on('pointerdown', (event) => this.onStartDrag(event, actor))
       .on('pointermove', () => this.onMoveDrag(actor))
       .on('pointerupoutside', (event) => this.onStopDrag(event, { actor, x: 0, y: 0 }))
       .on('pointerup', (event) => this.onStopDrag(event, { actor, x: 0, y: 0 }))
+      .on('rightdown', (e) => {
+        const x = e.data.global.x
+        const y = e.data.global.y
+        this.menu.openActionsMenu({ x, y, target: actor })
+      })
       .interactive = true
+
+    return actor
   }
 
   onStartDrag (event, actor) {
