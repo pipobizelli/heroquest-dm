@@ -115,18 +115,28 @@ export default class Actors {
     const tiles = window.Store.state.board.selectedTiles
     const tileObj = this.TileHelper.getTilebyHandle(tiles[0])
     const furniture = new this.PIXI.Sprite(this.sheet.textures[`${type}.png`])
+    const pX = 16
+    const pY = 16
+
     furniture.label = type
-    furniture.x = tileObj.c * 33 + x
-    furniture.y = tileObj.l * 33 + y
+    furniture.metadata = { x, y }
+    furniture.pivot = new this.PIXI.Point(pX - x, pY - y)
+    furniture.x = Math.round(tileObj.c * 33) + pX
+    furniture.y = Math.round(tileObj.l * 33) + pY
+
+    // const pivot = new this.PIXI.Graphics()
+    // pivot.beginFill(0xDE3249, 1)
+    // pivot.drawCircle(furniture.x, furniture.y, 2)
+    // pivot.endFill()
 
     furniture
       .on('mousedown', (event) => this.onStartDrag(event, furniture))
       .on('mousemove', () => this.onMoveDrag(furniture))
-      .on('mouseupoutside', (event) => this.onStopDrag(event, { actor: furniture, y, x }))
-      .on('mouseup', (event) => this.onStopDrag(event, { actor: furniture, y, x }))
+      .on('mouseupoutside', (event) => this.onStopDrag(event, { actor: furniture, x: pX, y: pY }))
+      .on('mouseup', (event) => this.onStopDrag(event, { actor: furniture, x: pX, y: pY }))
       .on('rightdown', (event) => {
-        const x = furniture.x + 17
-        const y = furniture.y + 17
+        const x = furniture.x
+        const y = furniture.y
         this.menu.openActionsMenu({ x, y, target: furniture })
       })
       .interactive = true
@@ -157,6 +167,8 @@ export default class Actors {
     if (close) {
       this.closeMenu()
     }
+
+    return actor
   }
 
   actorDrag (actor) {

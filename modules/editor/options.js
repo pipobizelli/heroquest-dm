@@ -130,7 +130,7 @@ export default function () {
           callback: () => { actors.addFurniture('fireplace', 1, 1) }
         }, {
           label: 'Mesa',
-          callback: () => { actors.addFurniture('table', 4, 3) }
+          callback: () => { actors.addFurniture('table', 5, 3) }
         }, {
           label: 'Mesa do Livro',
           callback: () => { actors.addFurniture('sorcererstable', 3, 2) }

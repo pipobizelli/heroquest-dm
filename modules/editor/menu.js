@@ -156,8 +156,8 @@ export default class Menu {
     this.bgH = (optsLength * this.optH) + (groups.length * 10)
 
     const menuWrapper = this.drawMenuBg({
-      x: this.menuX,
-      y: this.menuY,
+      x: Math.round(this.menuX),
+      y: Math.round(this.menuY),
       width: this.bgW,
       height: this.bgH
     })
@@ -182,8 +182,8 @@ export default class Menu {
     const y = this.menuY
     const height = (optionsArr.length * this.optH) + 10
     const menuWrapper = this.drawMenuBg({
-      x: x > (BoardConfig.width - this.bgW) ? x - (this.bgW * 2) : x,
-      y: y > (BoardConfig.height - height) ? y - (BoardConfig.height % height) : y,
+      x: x > (BoardConfig.width - this.bgW) ? Math.round(x - (this.bgW * 2)) : Math.round(x),
+      y: y > (BoardConfig.height - height) ? Math.round(y - (BoardConfig.height % height)) : Math.round(y),
       width: this.bgW,
       height: height
     })
