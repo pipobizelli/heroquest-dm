@@ -34,12 +34,32 @@ export async function initBoard () {
 
 export async function updateBoard () {
   const actors = new Actors()
+  const board = window.Store.state.board
+  const quest = window.Store.state.quest.data
+
+  // SLOTS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  const slots = quest.slots
+  for (const s in slots) {
+    actors.addSlot(slots[s])
+  }
 
   // BLOCKS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  const blocks = window.Store.state.board.blocks
+  const blocks = board.blocks
   actors.addBlock(blocks)
 
   // DOORS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  const doors = window.Store.state.board.doors
+  const doors = board.doors
   actors.addDoors(doors)
+
+  // SECRETDOORS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  const secretdoors = board.secretdoors
+  for (const s in secretdoors) {
+    actors.addComponent({
+      label: 'secretdoor',
+      type: 'secretdoors',
+      rotation: secretdoors[s].rotation,
+      y: 0,
+      x: 7
+    }, secretdoors[s].tiles)
+  }
 }

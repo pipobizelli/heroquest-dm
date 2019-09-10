@@ -36,14 +36,15 @@ export default class Actors {
   addSlot ({ x, y }) {
     this.slots++
     const slot = new this.PIXI.Sprite(this.sheet.textures[`${this.slots}.png`])
-    this.addActor({
-      x: x + (16 - slot.width / 2),
-      y: y + (16 - slot.height / 2),
-      label: this.slots,
-      type: 'slot',
-      width: slot.width,
-      height: slot.height
-    })
+    slot.x = x + (16 - slot.width / 2)
+    slot.y = y + (16 - slot.height / 2)
+    slot.label = this.slots
+    slot.type = 'slots'
+
+    this.wrapper.addChild(slot)
+    this.closeMenu()
+
+    return slot
   }
 
   closeMenu () {
@@ -136,8 +137,8 @@ export default class Actors {
     // return door
   }
 
-  addComponent ({ label, type = 'components', y = 0, x = 0 }) {
-    const tiles = window.Store.state.board.selectedTiles
+  addComponent ({ label, type = 'components', rotation = 0, y = 0, x = 0 }, tiles) {
+    // const tiles = window.Store.state.board.selectedTiles
     const tileObj = this.TileHelper.getTilebyHandle(tiles[0])
     const component = new this.PIXI.Sprite(this.sheet.textures[`${label}.png`])
 
@@ -147,6 +148,7 @@ export default class Actors {
     component.pivot = new this.PIXI.Point(this.pX - x, this.pY - y)
     component.x = Math.round(tileObj.c * 33) + this.pX
     component.y = Math.round(tileObj.l * 33) + this.pY
+    component.angle = rotation
 
     component
       .on('mousedown', (event) => this.onStartDrag(event, component))

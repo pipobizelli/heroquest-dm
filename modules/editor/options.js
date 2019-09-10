@@ -66,7 +66,11 @@ export default function () {
           return intersection.length < 1
         },
         callback: () => {
-          actors.addSlot(grid.tilePositon)
+          const tileObj = grid.tilePositon
+          window.Store.commit('quest/add_slot', {
+            ...tileObj
+          })
+          actors.addSlot(tileObj)
         }
       },
       monsters: {
@@ -161,37 +165,70 @@ export default function () {
         label: 'Adicionar Móvel',
         sub: [{
           label: 'Armário',
-          callback: () => { actors.addComponent({ label: 'cupboard', type: 'furniture', y: 0, x: 2 }) }
+          callback: () => {
+            const tiles = window.Store.state.board.selectedTiles
+            actors.addComponent({ label: 'cupboard', type: 'furniture', y: 0, x: 2 }, tiles)
+          }
         }, {
           label: 'Baú',
-          callback: () => { actors.addComponent({ label: 'chest', type: 'furniture', y: 4, x: 0 }) }
+          callback: () => {
+            const tiles = window.Store.state.board.selectedTiles
+            actors.addComponent({ label: 'chest', type: 'furniture', y: 4, x: 0 }, tiles)
+          }
         }, {
           label: 'Escrivaninha',
-          callback: () => { actors.addComponent({ label: 'alchemistsbench', type: 'furniture', y: 3, x: 4 }) }
+          callback: () => {
+            const tiles = window.Store.state.board.selectedTiles
+            actors.addComponent({ label: 'alchemistsbench', type: 'furniture', y: 3, x: 4 }, tiles)
+          }
         }, {
           label: 'Estante de Livros',
-          callback: () => { actors.addComponent({ label: 'bookcase', type: 'furniture' }) }
+          callback: () => {
+            const tiles = window.Store.state.board.selectedTiles
+            actors.addComponent({ label: 'bookcase', type: 'furniture' }, tiles)
+          }
         }, {
           label: 'Lareira',
-          callback: () => { actors.addComponent({ label: 'fireplace', type: 'furniture', y: 1, x: 1 }) }
+          callback: () => {
+            const tiles = window.Store.state.board.selectedTiles
+            actors.addComponent({ label: 'fireplace', type: 'furniture', y: 1, x: 1 }, tiles)
+          }
         }, {
           label: 'Mesa',
-          callback: () => { actors.addComponent({ label: 'table', type: 'furniture', y: 5, x: 3 }) }
+          callback: () => {
+            const tiles = window.Store.state.board.selectedTiles
+            actors.addComponent({ label: 'table', type: 'furniture', y: 5, x: 3 }, tiles)
+          }
         }, {
           label: 'Mesa do Livro',
-          callback: () => { actors.addComponent({ label: 'sorcererstable', type: 'furniture', y: 3, x: 2 }) }
+          callback: () => {
+            const tiles = window.Store.state.board.selectedTiles
+            actors.addComponent({ label: 'sorcererstable', type: 'furniture', y: 3, x: 2 }, tiles)
+          }
         }, {
           label: 'Rack de Armas',
-          callback: () => { actors.addComponent({ label: 'weaponsrack', type: 'furniture' }) }
+          callback: () => {
+            const tiles = window.Store.state.board.selectedTiles
+            actors.addComponent({ label: 'weaponsrack', type: 'furniture' }, tiles)
+          }
         }, {
           label: 'Tortura',
-          callback: () => { actors.addComponent({ label: 'rack', type: 'furniture', y: 1, x: 2 }) }
+          callback: () => {
+            const tiles = window.Store.state.board.selectedTiles
+            actors.addComponent({ label: 'rack', type: 'furniture', y: 1, x: 2 }, tiles)
+          }
         }, {
           label: 'Trono',
-          callback: () => { actors.addComponent({ label: 'throne', type: 'furniture', y: 1, x: 2 }) }
+          callback: () => {
+            const tiles = window.Store.state.board.selectedTiles
+            actors.addComponent({ label: 'throne', type: 'furniture', y: 1, x: 2 }, tiles)
+          }
         }, {
           label: 'Tumba',
-          callback: () => { actors.addComponent({ label: 'tomb', type: 'furniture', y: 4, x: 3 }) }
+          callback: () => {
+            const tiles = window.Store.state.board.selectedTiles
+            actors.addComponent({ label: 'tomb', type: 'furniture', y: 4, x: 3 }, tiles)
+          }
         }]
       },
       trap: {

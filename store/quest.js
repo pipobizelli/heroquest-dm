@@ -10,6 +10,9 @@ export const mutations = {
       ...state.data,
       ...quest
     }
+  },
+  add_slot (state, slot) {
+    state.data.slots = [...state.data.slots, slot]
   }
 }
 
@@ -63,9 +66,9 @@ export const actions = {
       }
     }
     console.log(quest.map)
-    // await QuestFacade().updateQuest({
-    //   id: id,
-    //   data: quest
-    // })
+    await QuestFacade().updateQuest({
+      id: id,
+      data: quest
+    })
   }
 }
