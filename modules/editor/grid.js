@@ -123,20 +123,32 @@ export default class Grid {
                 const l = window.Store.state.board.selectedTiles.length - 1
                 const last = window.Store.state.board.selectedTiles[l]
                 const path = Pathfinder(window.Store.state.board.map).getPath(tile.label, last)
-                window.Store.commit('board/set_selected', path)
+                // window.Store.commit('board/set_selected', path)
+                window.Store.commit('board/set_components', {
+                  type: 'selectedTiles',
+                  arr: path
+                })
               } else {
                 window.Store.commit('board/add_selected', tile.label)
               }
               self.drawGrid()
             } else {
-              window.Store.commit('board/remove_selected', tile.label)
+              // window.Store.commit('board/remove_selected', tile.label)
+              window.Store.commit('board/remove_component', {
+                type: 'selectedTiles',
+                component: tile.label
+              })
               self.drawGrid()
             }
           }, delay)
         } else {
           clearTimeout(timer)
           const path = Pathfinder(window.Store.state.board.map).getAllPaths(this.label)
-          window.Store.commit('board/set_selected', path)
+          // window.Store.commit('board/set_selected', path)
+          window.Store.commit('board/set_components', {
+            type: 'selectedTiles',
+            arr: path
+          })
           self.drawGrid()
         }
       })
@@ -159,7 +171,11 @@ export default class Grid {
         const y = e.data.global.y
         if (window.Store.state.board.selectedTiles.length < 1) {
           const label = `${parseInt(y / 33)}:${parseInt(x / 33)}`
-          window.Store.commit('board/set_selected', [label])
+          // window.Store.commit('board/set_selected', [label])
+          window.Store.commit('board/set_components', {
+            type: 'selectedTiles',
+            arr: [label]
+          })
           self.drawGrid()
         }
         self.menu.openMenu({ x, y })

@@ -222,7 +222,11 @@ export default class Menu {
 
     area
       .on('click', () => {
-        window.Store.commit('board/set_selected', [])
+        // window.Store.commit('board/set_selected', [])
+        window.Store.commit('board/set_components', {
+          type: 'selectedTiles',
+          arr: []
+        })
         this.grid.drawGrid()
         this.closeMenu()
       })

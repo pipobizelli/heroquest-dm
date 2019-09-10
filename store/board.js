@@ -9,23 +9,37 @@ export const state = () => ({
     config: BoardConfig.config
   },
   selectedTiles: [],
-  disabledTiles: []
+  disabledTiles: [],
+  blocks: [],
+  doors: [],
+  secretdoors: [],
+  searchs: [],
+  traps: [],
+  stairway: []
 })
 
 export const mutations = {
   add_selected (state, tile) {
     state.selectedTiles = [...state.selectedTiles, tile]
   },
-  remove_selected (state, tile) {
-    state.selectedTiles = state.selectedTiles.filter(t => t !== tile)
-  },
-  set_selected (state, tilesArr) {
-    state.selectedTiles = tilesArr
-  },
-  set_disabled (state, tilesArr) {
-    state.disabledTiles = state.disabledTiles.concat(tilesArr)
-  },
-  enable_tiles (state, tilesArr) {
+  set_enabled (state, tilesArr) {
     state.disabledTiles = state.disabledTiles.filter(t => !tilesArr.includes(t))
+  },
+  add_component (state, { component }) {
+    console.log(component)
+    state[component.type] = [...state[component.type], component]
+  },
+  remove_component (state, { component }) {
+    state[component.type] = state[component.type].filter(c => JSON.stringify(c.tiles) !== JSON.stringify(component.tiles))
+  },
+  rotate_component (state, { component }) {
+    const temp = state[component.type].filter(c => JSON.stringify(c.tiles) !== JSON.stringify(component.tiles))
+    state[component.type] = [...temp, { ...component }]
+  },
+  push_components (state, { type, arr }) {
+    state[type] = state[type].concat(arr)
+  },
+  set_components (state, { type, arr }) {
+    state[type] = arr
   }
 }

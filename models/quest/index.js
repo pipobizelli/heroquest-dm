@@ -5,7 +5,7 @@ import { Get, GetAll, Add, Update, Remove } from './rest'
 //   GetSession
 // }
 
-export let Rest = {
+export const Rest = {
   Get,
   GetAll,
   Add,

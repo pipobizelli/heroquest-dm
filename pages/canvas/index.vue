@@ -4,13 +4,13 @@
 </template>
 
 <script>
-import { canvasInit } from '@@/modules/editor/index'
+import { initBoard } from '@@/modules/editor/index'
 
 export default {
   async mounted () {
     if (process.browser) {
       window.Store = this.$store
-      await canvasInit()
+      await initBoard()
     }
   }
 }

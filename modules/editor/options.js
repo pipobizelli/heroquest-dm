@@ -21,8 +21,16 @@ export default function () {
         },
         callback: () => {
           const tiles = window.Store.state.board.selectedTiles
-          window.Store.commit('board/set_disabled', tiles)
-          window.Store.commit('board/set_selected', [])
+          // window.Store.commit('board/set_disabled', tiles)
+          window.Store.commit('board/push_components', {
+            type: 'disabledTiles',
+            arr: tiles
+          })
+          // window.Store.commit('board/set_selected', [])
+          window.Store.commit('board/set_components', {
+            type: 'selectedTiles',
+            arr: []
+          })
           menu.closeMenu()
           grid.drawGrid()
         }
@@ -37,8 +45,12 @@ export default function () {
         },
         callback: () => {
           const tiles = window.Store.state.board.selectedTiles
-          window.Store.commit('board/enable_tiles', tiles)
-          window.Store.commit('board/set_selected', [])
+          window.Store.commit('board/set_enabled', tiles)
+          // window.Store.commit('board/set_selected', [])
+          window.Store.commit('board/set_components', {
+            type: 'selectedTiles',
+            arr: []
+          })
           menu.closeMenu()
           grid.drawGrid()
         }
@@ -96,7 +108,14 @@ export default function () {
           return intersection.length < 1
         },
         callback: () => {
-          actors.addBlock()
+          const tiles = window.Store.state.board.selectedTiles
+          actors.addBlock(tiles)
+          window.Store.commit('board/add_component', {
+            component: {
+              tiles,
+              type: 'blocks'
+            }
+          })
         }
       },
       doors: {
@@ -108,16 +127,34 @@ export default function () {
           TileHelper.isTileInColumn(selected[0], selected[1]))
         },
         callback: () => {
-          actors.addDoor()
+          const tiles = window.Store.state.board.selectedTiles
+          actors.addDoors(tiles)
+          window.Store.commit('board/add_component', {
+            component: {
+              tiles,
+              type: 'doors'
+            }
+          })
         }
       },
       secreetdoors: {
         label: 'Add P. Secreta',
         condition: () => {
-          return window.Store.state.board.selectedTiles.length === 1
+          const selected = window.Store.state.board.selectedTiles
+          const disabled = window.Store.state.board.disabledTiles
+          const intersection = selected.filter(v => disabled.indexOf(v) >= 0)
+          return intersection.length < 1
         },
         callback: () => {
-          actors.addComponent({ label: 'secretdoor', type: 'furniture', y: 0, x: 7 })
+          const tiles = window.Store.state.board.selectedTiles
+          actors.addComponent({ label: 'secretdoor', type: 'secretdoors', y: 0, x: 7 }, tiles)
+          window.Store.commit('board/add_component', {
+            component: {
+              tiles,
+              type: 'secretdoors',
+              rotation: 0
+            }
+          })
         }
       },
       furniture: {
@@ -160,7 +197,10 @@ export default function () {
       trap: {
         label: 'Adicionar Armadilha',
         condition: () => {
-          return window.Store.state.board.selectedTiles.length === 1
+          const selected = window.Store.state.board.selectedTiles
+          const disabled = window.Store.state.board.disabledTiles
+          const intersection = selected.filter(v => disabled.indexOf(v) >= 0)
+          return intersection.length < 1
         },
         sub: [{
           label: 'Lanças',

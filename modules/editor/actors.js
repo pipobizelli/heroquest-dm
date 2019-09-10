@@ -47,15 +47,20 @@ export default class Actors {
   }
 
   closeMenu () {
-    window.Store.commit('board/set_selected', [])
+    // window.Store.commit('board/set_selected', [])
+    window.Store.commit('board/set_components', {
+      type: 'selectedTiles',
+      arr: []
+    })
     this.grid.drawGrid()
     this.menu.closeMenu()
   }
 
-  addBlock () {
-    const tiles = window.Store.state.board.selectedTiles
+  addBlock (tiles) {
+    // const tiles = window.Store.state.board.selectedTiles
     const config = {
       label: 'block',
+      type: 'blocks',
       width: 33,
       height: 33
     }
@@ -71,10 +76,13 @@ export default class Actors {
         y: tileObj.l * 33
       }
 
+      config.tiles = [tiles[t]]
+
       let double = false
       if (tiles[n] && (tiles[n] === next || tiles[n] === prev)) {
         config.label = 'doubleblock'
         config.width = 66
+        config.tiles = [tiles[t], tiles[n]]
         double = true
       }
 
@@ -82,6 +90,7 @@ export default class Actors {
         const prevTileObj = this.TileHelper.getFirstTile(tiles[t], tiles[p])
         cords.x = prevTileObj.c * 33
         cords.y = prevTileObj.l * 33
+        config.tiles = [tiles[p], tiles[t]]
       }
 
       if (!double) {
@@ -91,66 +100,77 @@ export default class Actors {
         })
 
         // reset
-        config.type = 'block'
+        config.label = 'block'
         config.width = 33
       }
     }
   }
 
-  addDoor () {
-    const t1 = window.Store.state.board.selectedTiles[0]
-    const t2 = window.Store.state.board.selectedTiles[1]
-    const tileObj = this.TileHelper.getFirstTile(t1, t2)
-    const door = this.addActor({
-      label: 'door',
-      rotation: this.TileHelper.isTileInColumn(t1, t2) ? 90 : 0,
-      anchorX: this.TileHelper.isTileInColumn(t1, t2) ? 0 : 0,
-      anchorY: this.TileHelper.isTileInColumn(t1, t2) ? 1 : 0,
-      x: tileObj.c * 33,
-      y: tileObj.l * 33,
-      height: 33,
-      width: 66,
-      events: false
-    })
+  addDoors (tiles) {
+    if (tiles.length % 2 > 0) {
+      return false
+    }
+
+    for (const t in tiles) {
+      if (t % 2 < 1) {
+        const t1 = tiles[t]
+        const t2 = tiles[parseInt(t) + 1]
+        const tileObj = this.TileHelper.getFirstTile(t1, t2)
+        this.addActor({
+          label: 'door',
+          type: 'doors',
+          tiles: [t1, t2],
+          rotation: this.TileHelper.isTileInColumn(t1, t2) ? 90 : 0,
+          anchorX: this.TileHelper.isTileInColumn(t1, t2) ? 0 : 0,
+          anchorY: this.TileHelper.isTileInColumn(t1, t2) ? 1 : 0,
+          x: tileObj.c * 33,
+          y: tileObj.l * 33,
+          height: 33,
+          width: 66,
+          events: false
+        })
+      }
+    }
 
     this.closeMenu()
-
-    return door
+    // return door
   }
 
-  addComponent ({ label, type = 'actor', y = 0, x = 0 }) {
+  addComponent ({ label, type = 'components', y = 0, x = 0 }) {
     const tiles = window.Store.state.board.selectedTiles
     const tileObj = this.TileHelper.getTilebyHandle(tiles[0])
-    const furniture = new this.PIXI.Sprite(this.sheet.textures[`${label}.png`])
+    const component = new this.PIXI.Sprite(this.sheet.textures[`${label}.png`])
 
-    furniture.label = label
-    furniture.type = type
-    furniture.pivot = new this.PIXI.Point(this.pX - x, this.pY - y)
-    furniture.x = Math.round(tileObj.c * 33) + this.pX
-    furniture.y = Math.round(tileObj.l * 33) + this.pY
+    component.label = label
+    component.type = type
+    component.tiles = tiles
+    component.pivot = new this.PIXI.Point(this.pX - x, this.pY - y)
+    component.x = Math.round(tileObj.c * 33) + this.pX
+    component.y = Math.round(tileObj.l * 33) + this.pY
 
-    furniture
-      .on('mousedown', (event) => this.onStartDrag(event, furniture))
-      .on('mousemove', () => this.onMoveDrag(furniture))
-      .on('mouseupoutside', (event) => this.onStopDrag(event, { actor: furniture, x: this.pX, y: this.pY }))
-      .on('mouseup', (event) => this.onStopDrag(event, { actor: furniture, x: this.pX, y: this.pY }))
+    component
+      .on('mousedown', (event) => this.onStartDrag(event, component))
+      .on('mousemove', () => this.onMoveDrag(component))
+      .on('mouseupoutside', (event) => this.onStopDrag(event, { actor: component, x: this.pX, y: this.pY }))
+      .on('mouseup', (event) => this.onStopDrag(event, { actor: component, x: this.pX, y: this.pY }))
       .on('rightdown', (event) => {
-        const x = furniture.x
-        const y = furniture.y
-        this.menu.openActionsMenu({ x, y, target: furniture })
+        const x = component.x
+        const y = component.y
+        this.menu.openActionsMenu({ x, y, target: component })
       })
       .interactive = true
 
-    this.wrapper.addChild(furniture)
+    this.wrapper.addChild(component)
     this.closeMenu()
 
-    return furniture
+    return component
   }
 
-  addActor ({ label, x, y, type = 'actor', anchorX = 0, anchorY = 0, rotation = 0, width = 33, height = 33, events = true, close = true }) {
+  addActor ({ label, x, y, type = 'actors', tiles = [], anchorX = 0, anchorY = 0, rotation = 0, width = 33, height = 33, events = true, close = true }) {
     const actor = new this.PIXI.Sprite(this.sheet.textures[`${label}.png`])
     actor.type = type
     actor.label = label
+    actor.tiles = tiles
     actor.width = width
     actor.height = height
     actor.anchor.set(anchorX, anchorY)
@@ -190,8 +210,7 @@ export default class Actors {
 
   onStartDrag (event, actor) {
     // reset grid
-    window.Store.commit('board/set_selected', [])
-    this.grid.drawGrid()
+    this.closeMenu()
 
     actor.alpha = 0.8
     actor.dragging = true

@@ -1,5 +1,10 @@
 <template>
   <section class="quest">
+    <article class="quest__actions">
+      <button type="button" name="button" @click="updateQuest">Save!</button>
+    </article>
+    <article class="quest__actions"></article>
+    <article id="editor"></article>
     <article class="quest__info">
       <div class="quest__data">
         <h2 class="quest__label">Titulo</h2>
@@ -34,15 +39,11 @@
         <p class="quest__value" v-html="quest.slots.length"></p>
       </div>
     </article>
-    <!-- <board :setupQuest="quest"></board> -->
-    <!-- <button type="button" name="quest_update" @click="update()">Salvar</button> -->
   </section>
 </template>
 
 <script>
-import QuestFacade from '@@/facades/quest'
-import DefaultQuest from '@@/data/quest.json'
-import { EventHub } from '@@/models/event_hub'
+import { initBoard } from '@@/modules/editor/index'
 export default {
   data () {
     return {
@@ -51,132 +52,92 @@ export default {
         desc: false,
         dificulty: false
       },
-      id: '',
-      quest: DefaultQuest
+      id: ''
     }
   },
-  created () {
-    EventHub.$on('Editor/add', (payload) => {
-      switch (payload.component.collection) {
-        case 'slots':
-          this.addSlot(payload)
-          break
-        case 'blocks':
-        case 'doors':
-        case 'stairway':
-          this.addMapComp(payload)
-          break
-        default:
-          this.addComponent(payload)
-          break
-      }
-    })
-
-    EventHub.$on('Editor/enableTiles', (tiles) => {
-      this.enableTiles(tiles)
-    })
-
-    EventHub.$on('Editor/disableTiles', (tiles) => {
-      this.disableTiles(tiles)
-    })
-
-    EventHub.$on('Editor/remove', (payload) => {
-      switch (payload.type) {
-        case 'slots':
-          this.removeSlot(payload)
-          break
-        case 'blocks':
-        case 'doors':
-        case 'stairway':
-          this.removeMapComp(payload)
-          break
-        default:
-          this.removeComponent(payload)
-          break
-      }
-    })
+  computed: {
+    quest () {
+      return this.$store.state.quest.data
+    }
   },
-  mounted () {
+  async mounted () {
     this.id = this.$route.params.quest
-    this.$nextTick(async () => {
-      let response = await QuestFacade().getQuest(this.$route.params.quest)
-      this.setup(response.data)
-    })
+    if (process.browser) {
+      window.Store = this.$store
+      this.$store.dispatch('quest/load_quest', this.id)
+      await initBoard()
+    }
   },
   methods: {
-    setup (quest) {
-      let self = this
-      setTimeout(() => {
-        self.quest = quest
-      }, 300)
-    },
     editInfo (node) {
       this.edit[node] = !this.edit[node]
-      this.saveQuest()
+      this.updateQuest()
     },
     update () {
       this.edit.name = false
       this.edit.desc = false
       this.edit.dificulty = false
-      this.saveQuest()
+      this.updateQuest()
     },
-    async saveQuest () {
-      await QuestFacade().updateQuest({
-        id: this.id,
-        data: this.quest
-      })
-    },
-    addSlot (payload) {
-      this.quest.slots.push({
-        tiles: payload.tiles
-      })
-      this.update()
-    },
-    removeSlot (payload) {
-      this.quest.slots = this.quest.slots.filter(s => s.tiles[0] !== payload.tiles[0])
-      this.update()
-    },
-    addMapComp (payload) {
-      this.quest.map[payload.type].push({
-        tiles: payload.tiles,
-        id: `comp_${Date.now()}`
-      })
-      this.update()
-    },
-    addComponent (payload) {
-      console.log(payload)
-      this.quest.components.push({
-        attributes: {
-          tiles: payload.tiles,
-          life: payload.component.data.attributes.life
-        },
-        collection: payload.collection,
-        id: `${payload.type}_${Date.now()}`,
-        type: payload.type
-      })
-      this.update()
-    },
-    removeMapComp (payload) {
-      let arr = this.quest.map[payload.type].filter(b => b.id !== payload.id)
-      this.quest.map[payload.type] = arr
-      this.update()
-    },
-    removeComponent (payload) {
-      let arr = this.quest.components.filter(c => c.id !== payload.id)
-      this.quest.components = arr
-      this.update()
-    },
-    enableTiles (tiles) {
-      this.quest.map.disables = this.quest.map.disables.filter(t => tiles.indexOf(t) < 0)
-      this.update()
-    },
-    disableTiles (tiles) {
-      this.quest.map.disables = this.quest.map.disables.concat(tiles)
-      this.update()
+    async updateQuest () {
+      // await QuestFacade().updateQuest({
+      //   id: this.id,
+      //   data: this.quest
+      // })
+      this.$store.dispatch('quest/save_quest', this.id)
     }
   }
 }
 </script>
 
 <style lang="scss">
+  @import '~assets/styles/base';
+  .quest {
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: 865px 20%;
+    grid-gap: 10px;
+
+    &__data {
+      @extend .container;
+    }
+
+    &__data + &__data {
+      margin-top: 10px;
+    }
+
+    &__label {
+      font-size: 12px;
+      color: gray;
+      border-bottom: 1px solid lightgray;
+      padding-bottom: 5px;
+    }
+
+    &__value {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: bold;
+      max-width: 70%;
+    }
+
+    &__edit {
+      color: gray;
+      float: right;
+      margin: 7px 0 0 10px;
+      vertical-align: top;
+      text-decoration: none;
+
+      > svg {
+        font-size: 16px;
+        vertical-align: top;
+      }
+    }
+
+    &__field {
+      display: inline-block;
+      margin-top: 10px;
+      max-width: 120px;
+    }
+  }
 </style>
