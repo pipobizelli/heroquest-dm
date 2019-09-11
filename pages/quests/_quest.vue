@@ -80,10 +80,6 @@ export default {
       this.updateQuest()
     },
     async updateQuest () {
-      // await QuestFacade().updateQuest({
-      //   id: this.id,
-      //   data: this.quest
-      // })
       this.$store.dispatch('quest/save_quest', this.id)
     }
   }

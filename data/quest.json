@@ -2,8 +2,6 @@
   "name": "",
   "description": "",
   "dificulty": "",
-  "components": [],
-  "objectives": {},
   "slots": [],
   "map": {
     "searchs": {
@@ -11,7 +9,9 @@
       "treasures": [],
       "secretdoors": []
     },
-    "disables": [],
+    "furnitures": [],
+    "monsters": [],
+    "disabledTiles": [],
     "doors": [],
     "blocks": [],
     "stairway": [],

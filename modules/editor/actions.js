@@ -4,8 +4,10 @@ import Menu from '@@/modules/editor/menu'
 export function rotateBoardComponent (target) {
   const grid = new Grid()
   const menu = new Menu()
+  console.log(target)
   window.Store.commit('board/rotate_component', {
     component: {
+      label: target.label,
       tiles: target.tiles,
       type: target.type,
       rotation: target.angle
@@ -24,7 +26,7 @@ export default function (target) {
       rotate: {
         label: 'Girar',
         condition: () => {
-          return target.type === 'secretdoors' || target.type === 'furniture'
+          return target.type === 'secretdoors' || target.type === 'furnitures'
         },
         sub: [
           {

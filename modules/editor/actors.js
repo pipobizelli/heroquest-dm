@@ -236,7 +236,16 @@ export default class Actors {
     actor.y = (gridY - diffY) + y
     actor.alpha = 1
     actor.dragging = false
-    // set the interaction data to null
-    actor.data = null
+
+    const tile = `${Math.round(actor.y / 33)}:${Math.round(actor.x / 33)}`
+    window.Store.commit('board/move_component', {
+      component: {
+        moveTo: [tile],
+        tiles: actor.tiles,
+        type: actor.type,
+        rotation: actor.angle || 0
+      }
+    })
+    actor.tiles = [tile]
   }
 }

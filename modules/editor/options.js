@@ -3,6 +3,21 @@ import Menu from '@@/modules/editor/menu'
 import Actors from '@@/modules/editor/actors'
 import Tile from '@@/helpers/tile'
 
+export function addComponent ({ label, type, tiles, rotation = 0, y = 0, x = 0, tilesArr }) {
+  const actors = new Actors()
+  actors.addComponent({ label: label, type, y, x }, tilesArr)
+  window.Store.commit('board/add_component', {
+    component: {
+      tiles: tilesArr,
+      label,
+      type,
+      rotation,
+      px: x,
+      py: y
+    }
+  })
+}
+
 export default function () {
   const grid = new Grid()
   const menu = new Menu()
@@ -67,8 +82,11 @@ export default function () {
         },
         callback: () => {
           const tileObj = grid.tilePositon
-          window.Store.commit('quest/add_slot', {
-            ...tileObj
+          window.Store.commit('board/add_component', {
+            component: {
+              tiles: tileObj,
+              type: 'slots'
+            }
           })
           actors.addSlot(tileObj)
         }
@@ -150,14 +168,12 @@ export default function () {
           return intersection.length < 1
         },
         callback: () => {
-          const tiles = window.Store.state.board.selectedTiles
-          actors.addComponent({ label: 'secretdoor', type: 'secretdoors', y: 0, x: 7 }, tiles)
-          window.Store.commit('board/add_component', {
-            component: {
-              tiles,
-              type: 'secretdoors',
-              rotation: 0
-            }
+          addComponent({
+            label: 'secretdoor',
+            type: 'secretdoors',
+            y: 0,
+            x: 7,
+            tilesArr: window.Store.state.board.selectedTiles
           })
         }
       },
@@ -166,68 +182,119 @@ export default function () {
         sub: [{
           label: 'Armário',
           callback: () => {
-            const tiles = window.Store.state.board.selectedTiles
-            actors.addComponent({ label: 'cupboard', type: 'furniture', y: 0, x: 2 }, tiles)
+            addComponent({
+              label: 'cupboard',
+              type: 'furnitures',
+              y: 0,
+              x: 2,
+              tilesArr: window.Store.state.board.selectedTiles
+            })
           }
         }, {
           label: 'Baú',
           callback: () => {
-            const tiles = window.Store.state.board.selectedTiles
-            actors.addComponent({ label: 'chest', type: 'furniture', y: 4, x: 0 }, tiles)
+            addComponent({
+              label: 'chest',
+              type: 'furnitures',
+              y: 4,
+              x: 0,
+              tilesArr: window.Store.state.board.selectedTiles
+            })
           }
         }, {
           label: 'Escrivaninha',
           callback: () => {
-            const tiles = window.Store.state.board.selectedTiles
-            actors.addComponent({ label: 'alchemistsbench', type: 'furniture', y: 3, x: 4 }, tiles)
+            addComponent({
+              label: 'alchemistsbench',
+              type: 'furnitures',
+              y: 3,
+              x: 4,
+              tilesArr: window.Store.state.board.selectedTiles
+            })
           }
         }, {
           label: 'Estante de Livros',
           callback: () => {
-            const tiles = window.Store.state.board.selectedTiles
-            actors.addComponent({ label: 'bookcase', type: 'furniture' }, tiles)
+            addComponent({
+              label: 'bookcase',
+              type: 'furnitures',
+              tilesArr: window.Store.state.board.selectedTiles
+            })
           }
         }, {
           label: 'Lareira',
           callback: () => {
-            const tiles = window.Store.state.board.selectedTiles
-            actors.addComponent({ label: 'fireplace', type: 'furniture', y: 1, x: 1 }, tiles)
+            addComponent({
+              label: 'fireplace',
+              type: 'furnitures',
+              y: 1,
+              x: 1,
+              tilesArr: window.Store.state.board.selectedTiles
+            })
           }
         }, {
           label: 'Mesa',
           callback: () => {
-            const tiles = window.Store.state.board.selectedTiles
-            actors.addComponent({ label: 'table', type: 'furniture', y: 5, x: 3 }, tiles)
+            addComponent({
+              label: 'table',
+              type: 'furnitures',
+              y: 5,
+              x: 3,
+              tilesArr: window.Store.state.board.selectedTiles
+            })
           }
         }, {
           label: 'Mesa do Livro',
           callback: () => {
-            const tiles = window.Store.state.board.selectedTiles
-            actors.addComponent({ label: 'sorcererstable', type: 'furniture', y: 3, x: 2 }, tiles)
+            addComponent({
+              label: 'sorcererstable',
+              type: 'furnitures',
+              y: 3,
+              x: 2,
+              tilesArr: window.Store.state.board.selectedTiles
+            })
           }
         }, {
           label: 'Rack de Armas',
           callback: () => {
-            const tiles = window.Store.state.board.selectedTiles
-            actors.addComponent({ label: 'weaponsrack', type: 'furniture' }, tiles)
+            addComponent({
+              label: 'weaponsrack',
+              type: 'furnitures',
+              tilesArr: window.Store.state.board.selectedTiles
+            })
           }
         }, {
           label: 'Tortura',
           callback: () => {
-            const tiles = window.Store.state.board.selectedTiles
-            actors.addComponent({ label: 'rack', type: 'furniture', y: 1, x: 2 }, tiles)
+            addComponent({
+              label: 'rack',
+              type: 'furnitures',
+              y: 1,
+              x: 2,
+              tilesArr: window.Store.state.board.selectedTiles
+            })
           }
         }, {
           label: 'Trono',
           callback: () => {
-            const tiles = window.Store.state.board.selectedTiles
-            actors.addComponent({ label: 'throne', type: 'furniture', y: 1, x: 2 }, tiles)
+            addComponent({
+              label: 'throne',
+              type: 'furnitures',
+              y: 1,
+              x: 2,
+              tilesArr: window.Store.state.board.selectedTiles
+            })
           }
         }, {
           label: 'Tumba',
           callback: () => {
-            const tiles = window.Store.state.board.selectedTiles
-            actors.addComponent({ label: 'tomb', type: 'furniture', y: 4, x: 3 }, tiles)
+            addComponent({
+              label: 'tomb',
+              type: 'furnitures',
+              y: 4,
+              x: 3,
+              tilesArr: window.Store.state.board.selectedTiles
+            })
           }
         }]
       },
@@ -242,12 +309,24 @@ export default function () {
         sub: [{
           label: 'Lanças',
           callback: () => {
-            actors.addComponent({ label: 'speartrap' })
+            // actors.addComponent({ label: 'speartrap' })
+            addComponent({
+              label: 'speartrap',
+              type: 'traps',
+              tilesArr: window.Store.state.board.selectedTiles
+            })
           }
         }, {
           label: 'Poço',
           callback: () => {
-            actors.addComponent({ label: 'pittrap', y: 3, x: 4 })
+            // actors.addComponent({ label: 'pittrap', y: 3, x: 4 })
+            addComponent({
+              label: 'pittrap',
+              type: 'traps',
+              y: 3,
+              x: 4,
+              tilesArr: window.Store.state.board.selectedTiles
+            })
           }
         }]
       }

@@ -8,6 +8,9 @@ export const state = () => ({
     },
     config: BoardConfig.config
   },
+  furnitures: [],
+  slots: [],
+  monsters: [],
   selectedTiles: [],
   disabledTiles: [],
   blocks: [],
@@ -26,7 +29,6 @@ export const mutations = {
     state.disabledTiles = state.disabledTiles.filter(t => !tilesArr.includes(t))
   },
   add_component (state, { component }) {
-    console.log(component)
     state[component.type] = [...state[component.type], component]
   },
   remove_component (state, { component }) {
@@ -35,6 +37,15 @@ export const mutations = {
   rotate_component (state, { component }) {
     const temp = state[component.type].filter(c => JSON.stringify(c.tiles) !== JSON.stringify(component.tiles))
     state[component.type] = [...temp, { ...component }]
+  },
+  move_component (state, { component }) {
+    const temp = state[component.type].filter(c => JSON.stringify(c.tiles) !== JSON.stringify(component.tiles))
+    const comp = state[component.type].find(c => JSON.stringify(c.tiles) === JSON.stringify(component.tiles))
+    state[component.type] = [...temp, {
+      ...comp,
+      ...component,
+      tiles: component.moveTo
+    }]
   },
   push_components (state, { type, arr }) {
     state[type] = state[type].concat(arr)

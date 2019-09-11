@@ -24,8 +24,22 @@ export const actions = {
   },
   setup_quest ({ state }) {
     this.commit('board/set_components', {
+      type: 'slots',
+      arr: state.data.slots
+    })
+
+    // const comps = Object.values(state.data.map)
+    //
+    // for (const c in comps) {
+    //   this.commit('board/set_components', {
+    //     type: 'disabledTiles',
+    //     arr: state.data.map.disables
+    //   })
+    // }
+
+    this.commit('board/set_components', {
       type: 'disabledTiles',
-      arr: state.data.map.disables
+      arr: state.data.map.disabledTiles
     })
 
     this.commit('board/set_components', {
@@ -44,6 +58,16 @@ export const actions = {
     })
 
     this.commit('board/set_components', {
+      type: 'furnitures',
+      arr: state.data.map.furnitures
+    })
+
+    this.commit('board/set_components', {
+      type: 'monsters',
+      arr: state.data.map.monsters
+    })
+
+    this.commit('board/set_components', {
       type: 'traps',
       arr: state.data.map.traps
     })
@@ -55,9 +79,12 @@ export const actions = {
     const board = this.state.board
     const quest = {
       ...state.data,
+      slots: board.slots,
       map: {
+        furnitures: board.furnitures,
         blocks: board.blocks,
-        disables: board.disabledTiles,
+        // disables: board.disabledTiles,
+        disabledTiles: board.disabledTiles,
         doors: board.doors,
         searchs: board.searchs,
         secretdoors: board.secretdoors,
@@ -65,7 +92,7 @@ export const actions = {
         traps: board.traps
       }
     }
-    console.log(quest.map)
+    console.log(quest)
     await QuestFacade().updateQuest({
       id: id,
       data: quest
