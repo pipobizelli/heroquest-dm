@@ -25,6 +25,9 @@ export const mutations = {
   add_selected (state, tile) {
     state.selectedTiles = [...state.selectedTiles, tile]
   },
+  remove_selected (state, tile) {
+    state.selectedTiles = state.selectedTiles.filter(t => t !== tile)
+  },
   set_enabled (state, tilesArr) {
     state.disabledTiles = state.disabledTiles.filter(t => !tilesArr.includes(t))
   },

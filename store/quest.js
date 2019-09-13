@@ -28,49 +28,14 @@ export const actions = {
       arr: state.data.slots
     })
 
-    // const comps = Object.values(state.data.map)
-    //
-    // for (const c in comps) {
-    //   this.commit('board/set_components', {
-    //     type: 'disabledTiles',
-    //     arr: state.data.map.disables
-    //   })
-    // }
+    const types = Object.keys(state.data.map)
 
-    this.commit('board/set_components', {
-      type: 'disabledTiles',
-      arr: state.data.map.disabledTiles
-    })
-
-    this.commit('board/set_components', {
-      type: 'blocks',
-      arr: state.data.map.blocks
-    })
-
-    this.commit('board/set_components', {
-      type: 'doors',
-      arr: state.data.map.doors
-    })
-
-    this.commit('board/set_components', {
-      type: 'secretdoors',
-      arr: state.data.map.secretdoors
-    })
-
-    this.commit('board/set_components', {
-      type: 'furnitures',
-      arr: state.data.map.furnitures
-    })
-
-    this.commit('board/set_components', {
-      type: 'monsters',
-      arr: state.data.map.monsters
-    })
-
-    this.commit('board/set_components', {
-      type: 'traps',
-      arr: state.data.map.traps
-    })
+    for (const t in types) {
+      this.commit('board/set_components', {
+        type: types[t],
+        arr: state.data.map[types[t]]
+      })
+    }
   },
   update_quest ({ commit }, data) {
     commit('set_quest', data)
@@ -81,11 +46,11 @@ export const actions = {
       ...state.data,
       slots: board.slots,
       map: {
-        furnitures: board.furnitures,
         blocks: board.blocks,
-        // disables: board.disabledTiles,
         disabledTiles: board.disabledTiles,
         doors: board.doors,
+        furnitures: board.furnitures,
+        monsters: board.monsters,
         searchs: board.searchs,
         secretdoors: board.secretdoors,
         stairway: board.stairway,

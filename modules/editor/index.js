@@ -39,7 +39,7 @@ export async function updateBoard () {
   // SLOTS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   const slots = board.slots
   for (const s in slots) {
-    actors.addSlot(slots[s])
+    actors.addSlot(slots[s].tiles)
   }
 
   // BLOCKS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -89,12 +89,16 @@ export async function updateBoard () {
   }
 
   // MONSTERS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  const monsters = board.monster
+  const monsters = board.monsters
   for (const m in monsters) {
     const monster = monsters[m]
     actors.addComponent({
       label: monster.label,
-      type: 'monsters'
+      type: 'monsters',
+      y: monster.py,
+      x: monster.px,
+      height: monster.height,
+      width: monster.width
     }, monster.tiles)
   }
 }

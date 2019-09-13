@@ -64,7 +64,7 @@ export default {
     this.id = this.$route.params.quest
     if (process.browser) {
       window.Store = this.$store
-      this.$store.dispatch('quest/load_quest', this.id)
+      await this.$store.dispatch('quest/load_quest', this.id)
       await initBoard()
     }
   },

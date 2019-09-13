@@ -133,11 +133,11 @@ export default class Grid {
               }
               self.drawGrid()
             } else {
-              // window.Store.commit('board/remove_selected', tile.label)
-              window.Store.commit('board/remove_component', {
-                type: 'selectedTiles',
-                component: tile.label
-              })
+              window.Store.commit('board/remove_selected', tile.label)
+              // window.Store.commit('board/remove_component', {
+              //   type: 'selectedTiles',
+              //   component: tile.label
+              // })
               self.drawGrid()
             }
           }, delay)

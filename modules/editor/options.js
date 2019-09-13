@@ -18,6 +18,23 @@ export function addComponent ({ label, type, tiles, rotation = 0, y = 0, x = 0, 
   })
 }
 
+export function addActor ({ type, label, x, y, height, width }) {
+  const actors = new Actors()
+  const tiles = window.Store.state.board.selectedTiles
+  actors.addComponent({ label, type, y, x, height, width }, tiles)
+  window.Store.commit('board/add_component', {
+    component: {
+      tiles: tiles,
+      label,
+      type,
+      px: x,
+      py: y,
+      height,
+      width
+    }
+  })
+}
+
 export default function () {
   const grid = new Grid()
   const menu = new Menu()
@@ -95,28 +112,87 @@ export default function () {
         label: 'Adicionar Monstro',
         sub: [{
           label: 'Orc',
-          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'orc' }) }
+          callback: () => {
+            addActor({
+              type: 'monsters',
+              label: 'orc',
+              y: 2,
+              x: 1
+            })
+          }
         }, {
           label: 'Goblin',
-          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'goblin' }) }
+          callback: () => {
+            addActor({
+              type: 'monsters',
+              label: 'goblin',
+              y: 2,
+              x: 2
+            })
+          }
         }, {
           label: 'Fimir',
-          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'fimir' }) }
+          callback: () => {
+            addActor({
+              type: 'monsters',
+              label: 'fimir',
+              y: 2,
+              x: 2
+            })
+          }
         }, {
           label: 'Esqueleto',
-          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'skeleton' }) }
+          callback: () => {
+            addActor({
+              type: 'monsters',
+              label: 'skeleton',
+              y: 1,
+              x: 1
+            })
+          }
         }, {
           label: 'Zumbi',
-          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'zombie' }) }
+          callback: () => {
+            addActor({
+              type: 'monsters',
+              label: 'zombie',
+              y: 2,
+              x: 1
+            })
+          }
         }, {
           label: 'Mumia',
-          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'mummy' }) }
+          callback: () => {
+            addActor({
+              type: 'monsters',
+              label: 'mummy',
+              y: 2,
+              x: 2
+            })
+          }
         }, {
           label: 'G. Caos',
-          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'chaos' }) }
+          callback: () => {
+            addActor({
+              type: 'monsters',
+              label: 'chaos',
+              height: 31,
+              width: 29,
+              x: -7,
+              y: -8
+            })
+          }
         }, {
           label: 'Gárgola',
-          callback: () => { actors.addActor({ ...grid.tilePositon, label: 'gargoyle' }) }
+          callback: () => {
+            addActor({
+              type: 'monsters',
+              label: 'gargoyle',
+              width: 30,
+              height: 23,
+              x: -6
+            })
+          }
         }]
       }
     },
