@@ -2,7 +2,7 @@ import BoardConfig from '@@/data/board.json'
 import Grid from './grid'
 import Options from './options'
 import Actions from './actions'
-import { colors } from './colors'
+import { colors } from '@@/modules/colors'
 
 let instance = null
 export default class Menu {

@@ -1,7 +1,7 @@
 {
   "name": "",
   "description": "",
-  "dificulty": "",
+  "difficulty": "normal",
   "slots": [],
   "map": {
     "searchs": {
@@ -14,7 +14,7 @@
     "disabledTiles": [],
     "doors": [],
     "blocks": [],
-    "stairway": [],
+    "stairways": [],
     "traps": [],
     "secretdoors": []
   }

@@ -1,7 +1,7 @@
 import BoardConfig from '@@/data/board.json'
 import Config from '@@/config/env'
 import Grid from './grid'
-import Menu from './menu'
+import Menu from '@@/modules/editor/menu'
 import Tile from '@@/helpers/tile'
 
 let instance = null
@@ -40,6 +40,7 @@ export default class Actors {
     slot.y = y + (this.pY - slot.height / 2)
     slot.label = this.slots
     slot.type = 'slots'
+    slot.zIndex = 10
 
     this.wrapper.addChild(slot)
     this.closeMenu()
@@ -107,34 +108,34 @@ export default class Actors {
     }
   }
 
-  addDoors (tiles) {
-    if (tiles.length % 2 > 0) {
+  addDoor (tiles) {
+    if (tiles.length !== 2) {
       return false
     }
 
-    for (const t in tiles) {
-      if (t % 2 < 1) {
-        const t1 = tiles[t]
-        const t2 = tiles[parseInt(t) + 1]
-        const tileObj = this.TileHelper.getFirstTile(t1, t2)
-        this.addActor({
-          label: 'door',
-          type: 'doors',
-          tiles: [t1, t2],
-          rotation: this.TileHelper.isTileInColumn(t1, t2) ? 90 : 0,
-          anchorX: this.TileHelper.isTileInColumn(t1, t2) ? 0 : 0,
-          anchorY: this.TileHelper.isTileInColumn(t1, t2) ? 1 : 0,
-          x: tileObj.c * 33,
-          y: tileObj.l * 33,
-          height: 33,
-          width: 66,
-          events: false
-        })
-      }
-    }
+    // for (const t in tiles) {
+    //   if (t % 2 < 1) {
+    const t1 = tiles[0]
+    const t2 = tiles[1]
+    const tileObj = this.TileHelper.getFirstTile(t1, t2)
+    const door = this.addActor({
+      label: 'door',
+      type: 'doors',
+      tiles: [t1, t2],
+      rotation: this.TileHelper.isTileInColumn(t1, t2) ? 90 : 0,
+      anchorX: this.TileHelper.isTileInColumn(t1, t2) ? 0 : 0,
+      anchorY: this.TileHelper.isTileInColumn(t1, t2) ? 1 : 0,
+      x: tileObj.c * 33,
+      y: tileObj.l * 33,
+      height: 33,
+      width: 66,
+      events: false
+    })
+    //   }
+    // }
 
     this.closeMenu()
-    // return door
+    return door
   }
 
   addComponent ({ label, type = 'components', rotation = 0, y = 0, x = 0, width = 0, height = 0 }, tiles) {
@@ -183,6 +184,7 @@ export default class Actors {
     actor.x = x
     actor.y = y
     actor.buttonMode = events
+    // actor.zIndex = 10
 
     if (events) {
       this.actorEvents(actor)

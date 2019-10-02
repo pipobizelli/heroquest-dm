@@ -1,6 +1,5 @@
 import Config from '@@/config/env'
 import BoardConfig from '@@/data/board.json'
-import Grid from '@@/modules/editor/grid'
 import Menu from '@@/modules/editor/menu'
 import Actors from '@@/modules/editor/actors'
 
@@ -20,31 +19,30 @@ export async function initBoard () {
 
   PIXI.Loader.shared
     .load(async () => {
-      const grid = new Grid()
+      // const grid = new Grid()
       const menu = new Menu()
       const actors = new Actors()
-
-      await grid.setup()
+      // await grid.setup()
       await menu.setup()
       await actors.setup()
-      grid.drawGrid()
-      canvasApp.stage.addChild(grid.data, actors.data, menu.data)
-      grid.drawBorders()
+      // grid.drawGrid()
+      // canvasApp.stage.addChild(grid.data, actors.data, menu.data)
+      // grid.drawBorders()
       updateBoard()
     })
 }
 
 export async function updateBoard () {
   const actors = new Actors()
-  const board = window.Store.state.board
+  const board = window.Store.state.session.quest
 
   // console.log(board)
 
   // SLOTS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  const slots = board.slots
-  for (const s in slots) {
-    actors.addSlot(slots[s].tiles)
-  }
+  // const slots = board.slots
+  // for (const s in slots) {
+  //   actors.addSlot(slots[s].tiles)
+  // }
 
   // BLOCKS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   const blocks = board.blocks

@@ -226,7 +226,7 @@ export default function () {
         },
         callback: () => {
           const tiles = window.Store.state.board.selectedTiles
-          actors.addDoors(tiles)
+          actors.addDoor(tiles)
           window.Store.commit('board/add_component', {
             component: {
               tiles,
@@ -405,6 +405,19 @@ export default function () {
             })
           }
         }]
+      },
+      stairway: {
+        label: 'Add Escadaria',
+        condition: () => {
+          return window.Store.state.board.selectedTiles.length === 4
+        },
+        callback: () => {
+          addComponent({
+            label: 'stairway',
+            type: 'stairways',
+            tilesArr: window.Store.state.board.selectedTiles
+          })
+        }
       }
     }
   }

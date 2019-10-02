@@ -1,8 +1,8 @@
 import Config from '@@/config/env'
 import BoardConfig from '@@/data/board.json'
 import Pathfinder from '@@/helpers/pathfinder'
-import Menu from './menu'
-import { getTileColor } from './colors'
+import Menu from '@@/modules/editor/menu'
+import { getTileColor } from '@@/modules/colors'
 
 let instance = null
 

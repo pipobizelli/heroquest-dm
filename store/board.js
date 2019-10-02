@@ -17,8 +17,8 @@ export const state = () => ({
   doors: [],
   secretdoors: [],
   searchs: [],
-  traps: [],
-  stairway: []
+  stairways: [],
+  traps: []
 })
 
 export const mutations = {

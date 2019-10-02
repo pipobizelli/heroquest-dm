@@ -1,12 +1,12 @@
 import { AddSession, GetSession } from './factory'
 import { Get, GetAll, Add, AddEntities, Update } from './rest'
 
-export let Factory = {
+export const Factory = {
   AddSession,
   GetSession
 }
 
-export let Rest = {
+export const Rest = {
   Get,
   GetAll,
   Add,

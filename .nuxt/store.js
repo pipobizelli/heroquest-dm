@@ -18,6 +18,7 @@ void (function updateModules() {
 
   resolveStoreModules(require('../store/board.js'), 'board.js')
   resolveStoreModules(require('../store/quest.js'), 'quest.js')
+  resolveStoreModules(require('../store/session.js'), 'session.js')
 
   // If the environment supports hot reloading...
 
@@ -26,6 +27,7 @@ void (function updateModules() {
     module.hot.accept([
       '../store/board.js',
       '../store/quest.js',
+      '../store/session.js',
     ], () => {
       // Update `root.modules` with the latest definitions.
       updateModules()

@@ -2,10 +2,10 @@ import Adapter from '../../adapters/firebase'
 import { Add, Get, AddEntities } from './rest'
 export async function GetSession (sessionId) {
   try {
-    let session = await Get(sessionId)
-    let quest = await Adapter().getDoc('quests', session.quest)
-    let entities = await Adapter().queryDocs('session_entities', ['session_id', '==', sessionId])
-    let components = entities.map(e => {
+    const session = await Get(sessionId)
+    const quest = await Adapter().getDoc('quests', session.quest)
+    const entities = await Adapter().queryDocs('session_entities', ['session_id', '==', sessionId])
+    const components = entities.map(e => {
       return {
         ...e.data(),
         entity_id: e.id
@@ -32,12 +32,12 @@ export async function GetSession (sessionId) {
 export async function AddSession (session) {
   // Criar as entities juntando os personagens e components
   try {
-    let quest = await Adapter().getDoc('quests', session.quest)
-    let components = await GetComponents(quest)
-    let characters = await GetCharaceters(session.slots)
-    let heroes = ValidateCharacters(characters)
-    let entitiesArr = heroes.concat(components)
-    let id = await Add(session)
+    const quest = await Adapter().getDoc('quests', session.quest)
+    const components = await GetComponents(quest)
+    const characters = await GetCharaceters(session.slots)
+    const heroes = ValidateCharacters(characters)
+    const entitiesArr = heroes.concat(components)
+    const id = await Add(session)
     entitiesArr.map((e) => {
       e.session_id = id
       return e

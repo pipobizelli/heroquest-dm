@@ -13,6 +13,15 @@ export const mutations = {
   },
   add_slot (state, slot) {
     state.data.slots = [...state.data.slots, slot]
+  },
+  change_name (state, name) {
+    state.data.name = name
+  },
+  change_desc (state, desc) {
+    state.data.description = desc
+  },
+  change_diff (state, diff) {
+    state.data.difficulty = diff
   }
 }
 
@@ -53,7 +62,7 @@ export const actions = {
         monsters: board.monsters,
         searchs: board.searchs,
         secretdoors: board.secretdoors,
-        stairway: board.stairway,
+        stairways: board.stairways,
         traps: board.traps
       }
     }

@@ -9,7 +9,7 @@
       <div class="quest__data">
         <h2 class="quest__label">Titulo</h2>
         <p class="quest__value" v-html="quest.name" v-show="!edit.name"></p>
-        <input class="quest__field" type="text" name="quest_name" v-show="edit.name" v-model="quest.name">
+        <input class="quest__field" type="text" name="quest_name" v-show="edit.name" v-model="name">
         <a class="quest__edit" href="#" @click.prevent="editInfo('name')">
           <font-awesome-icon icon="edit"></font-awesome-icon>
         </a>
@@ -17,20 +17,20 @@
       <div class="quest__data">
         <h2 class="quest__label">Descrição</h2>
         <p class="quest__value" v-html="quest.description" v-show="!edit.desc"></p>
-        <textarea class="quest__field" name="quest_desc" rows="6" v-show="edit.desc" v-model="quest.description"></textarea>
+        <textarea class="quest__field" name="quest_desc" rows="6" v-show="edit.desc" v-model="description"></textarea>
         <a class="quest__edit" href="#" @click.prevent="editInfo('desc')">
           <font-awesome-icon icon="edit"></font-awesome-icon>
         </a>
       </div>
       <div class="quest__data">
         <h2 class="quest__label">Dificuldade</h2>
-        <p class="quest__value" v-html="quest.dificulty" v-show="!edit.dificulty"></p>
-        <select class="quest__dificulty" name="quest-dificulty" v-show="edit.dificulty" v-model="quest.dificulty">
-          <option value="easy">Facil</option>
-          <option value="normal">Normal</option>
-          <option value="hard">Difícil</option>
+        <p class="quest__value" v-html="difficulty" v-show="!edit.diff"></p>
+        <select class="quest__dificulty" name="quest-dificulty" v-show="edit.diff" v-model="difficulty">
+          <option value="easy">easy</option>
+          <option value="normal">normal</option>
+          <option value="hard">hard</option>
         </select>
-        <a class="quest__edit" href="#" @click.prevent="editInfo('dificulty')">
+        <a class="quest__edit" href="#" @click.prevent="editInfo('diff')">
           <font-awesome-icon icon="edit"></font-awesome-icon>
         </a>
       </div>
@@ -50,9 +50,23 @@ export default {
       edit: {
         name: false,
         desc: false,
-        dificulty: false
+        diff: false
       },
-      id: ''
+      id: '',
+      name: '',
+      description: '',
+      difficulty: ''
+    }
+  },
+  watch: {
+    name (val) {
+      this.$store.commit('quest/change_name', val)
+    },
+    description (val) {
+      this.$store.commit('quest/change_desc', val)
+    },
+    difficulty (val) {
+      this.$store.commit('quest/change_diff', val)
     }
   },
   computed: {
@@ -66,6 +80,9 @@ export default {
       window.Store = this.$store
       await this.$store.dispatch('quest/load_quest', this.id)
       await initBoard()
+      this.name = this.$store.state.quest.data.name
+      this.description = this.$store.state.quest.data.description
+      this.difficulty = this.$store.state.quest.data.difficulty
     }
   },
   methods: {
@@ -76,7 +93,7 @@ export default {
     update () {
       this.edit.name = false
       this.edit.desc = false
-      this.edit.dificulty = false
+      this.edit.diff = false
       this.updateQuest()
     },
     async updateQuest () {

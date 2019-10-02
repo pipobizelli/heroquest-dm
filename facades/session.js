@@ -4,7 +4,7 @@ export default () => {
   return {
     async getSession (id) {
       try {
-        let response = await axios.get(`${Config.paths.base_url}/api/sessions/${id}`)
+        const response = await axios.get(`${Config.paths.base_url}/api/sessions/${id}`)
         return response
       } catch (e) {
         console.log('[facade] session getSession')
@@ -14,7 +14,7 @@ export default () => {
 
     async getAllSessions () {
       try {
-        let response = await axios.get(`${Config.paths.base_url}/api/sessions`)
+        const response = await axios.get(`${Config.paths.base_url}/api/sessions`)
         return response
       } catch (e) {
         console.log('[facade] session getAllSessions')
@@ -24,7 +24,7 @@ export default () => {
 
     async addSession (session) {
       try {
-        let response = await axios.post(`${Config.paths.base_url}/api/sessions/add`, session)
+        const response = await axios.post(`${Config.paths.base_url}/api/sessions/add`, session)
         return response
       } catch (e) {
         console.log('[facade] session addSession')
@@ -34,7 +34,7 @@ export default () => {
 
     async updateSession (session) {
       try {
-        let response = await axios.post(`${Config.paths.base_url}/api/sessions/update`, session)
+        const response = await axios.post(`${Config.paths.base_url}/api/sessions/update`, session)
         return response
       } catch (e) {
         console.log('[facade] session updateSession')
