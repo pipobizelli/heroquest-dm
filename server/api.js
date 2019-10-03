@@ -1,5 +1,5 @@
 import express from 'express'
-import Config from '../config/env'
+// import Config from '../config/env'
 import { GetSession, ListSession, AddSession, UpdateSession } from '../api/controllers/session'
 import { GetQuest, ListQuest, AddQuest, UpdateQuest, RemoveQuest } from '../api/controllers/quests'
 import { GetCharacter, ListCharacter } from '../api/controllers/characters'
@@ -7,6 +7,7 @@ import { ListMonsters, GetMonster } from '../api/controllers/monsters'
 import { ListFurniture, GetFurniture } from '../api/controllers/furniture'
 import BodyParser from 'body-parser'
 import Editor from '../data/editor.json'
+import Session from '../data/session.json'
 
 const app = express()
 app.use(BodyParser.json())
@@ -15,8 +16,14 @@ app.use(BodyParser.urlencoded({ extended: true }))
 app.get('/editor.json', (req, res) => {
   res.json(Editor)
 })
+app.get('/session.json', (req, res) => {
+  res.json(Session)
+})
 app.get('/editor.png', (req, res) => {
   res.redirect('/editor.png')
+})
+app.get('/session.png', (req, res) => {
+  res.redirect('/session.png')
 })
 
 // Session ==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--=

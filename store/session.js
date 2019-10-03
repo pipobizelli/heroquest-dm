@@ -15,7 +15,7 @@ export const mutations = {
 export const actions = {
   async load_quest ({ commit, dispatch }, id) {
     const response = await SessionFacade().getSession(id)
-    console.log(response)
+    // console.log(response)
     commit('set_quest', response.data.quest)
     // dispatch('setup_quest')
   },

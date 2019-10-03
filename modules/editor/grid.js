@@ -32,7 +32,9 @@ export default class Grid {
     })
 
     document.addEventListener('keyup', (e) => {
-      this.shift = false
+      if (e.keyCode === 16) {
+        this.shift = false
+      }
     })
     return this
   }
