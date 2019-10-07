@@ -52,7 +52,9 @@ export default class Grid {
   }
 
   clearGrid () {
-    this.grid.removeChildren()
+    if (this.grid) {
+      this.grid.removeChildren()
+    }
     return this
   }
 
@@ -86,6 +88,9 @@ export default class Grid {
   }
 
   drawGrid () {
+    if (!this.grid) {
+      return false
+    }
     this.clearGrid()
     for (let l = 0; l < BoardConfig.lines; l++) {
       for (let c = 0; c < BoardConfig.columns; c++) {

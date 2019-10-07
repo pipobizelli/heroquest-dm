@@ -1,32 +1,18 @@
 import Grid from '@@/modules/editor/grid'
 import Menu from '@@/modules/editor/menu'
-import Actors from '@@/modules/editor/actors'
+import Componets from '@@/modules/components'
 import Tile from '@@/helpers/tile'
 
-export function addComponent ({ label, type, tiles, rotation = 0, y = 0, x = 0, tilesArr }) {
-  const actors = new Actors()
-  actors.addComponent({ label: label, type, y, x }, tilesArr)
+export function addComponent ({ type, label, x = 0, y = 0, rotation = 0, height, width }) {
+  const actors = new Componets()
+  const tiles = window.Store.state.board.selectedTiles
+  actors.addComponent({ label, type, y, x, tiles, height, width }, tiles)
   window.Store.commit('board/add_component', {
     component: {
-      tiles: tilesArr,
+      tiles,
       label,
       type,
       rotation,
-      px: x,
-      py: y
-    }
-  })
-}
-
-export function addActor ({ type, label, x, y, height, width }) {
-  const actors = new Actors()
-  const tiles = window.Store.state.board.selectedTiles
-  actors.addComponent({ label, type, y, x, height, width }, tiles)
-  window.Store.commit('board/add_component', {
-    component: {
-      tiles: tiles,
-      label,
-      type,
       px: x,
       py: y,
       height,
@@ -38,7 +24,7 @@ export function addActor ({ type, label, x, y, height, width }) {
 export default function () {
   const grid = new Grid()
   const menu = new Menu()
-  const actors = new Actors()
+  const actors = new Componets()
   const TileHelper = Tile(window.Store.state.board.map)
 
   return {
@@ -53,12 +39,10 @@ export default function () {
         },
         callback: () => {
           const tiles = window.Store.state.board.selectedTiles
-          // window.Store.commit('board/set_disabled', tiles)
           window.Store.commit('board/push_components', {
             type: 'disabledTiles',
             arr: tiles
           })
-          // window.Store.commit('board/set_selected', [])
           window.Store.commit('board/set_components', {
             type: 'selectedTiles',
             arr: []
@@ -78,7 +62,6 @@ export default function () {
         callback: () => {
           const tiles = window.Store.state.board.selectedTiles
           window.Store.commit('board/set_enabled', tiles)
-          // window.Store.commit('board/set_selected', [])
           window.Store.commit('board/set_components', {
             type: 'selectedTiles',
             arr: []
@@ -99,13 +82,13 @@ export default function () {
         },
         callback: () => {
           const tileObj = grid.tilePositon
+          actors.addSlot(tileObj)
           window.Store.commit('board/add_component', {
             component: {
               tiles: tileObj,
               type: 'slots'
             }
           })
-          actors.addSlot(tileObj)
         }
       },
       monsters: {
@@ -113,7 +96,7 @@ export default function () {
         sub: [{
           label: 'Orc',
           callback: () => {
-            addActor({
+            addComponent({
               type: 'monsters',
               label: 'orc',
               y: 2,
@@ -123,7 +106,7 @@ export default function () {
         }, {
           label: 'Goblin',
           callback: () => {
-            addActor({
+            addComponent({
               type: 'monsters',
               label: 'goblin',
               y: 2,
@@ -133,7 +116,7 @@ export default function () {
         }, {
           label: 'Fimir',
           callback: () => {
-            addActor({
+            addComponent({
               type: 'monsters',
               label: 'fimir',
               y: 2,
@@ -143,7 +126,7 @@ export default function () {
         }, {
           label: 'Esqueleto',
           callback: () => {
-            addActor({
+            addComponent({
               type: 'monsters',
               label: 'skeleton',
               y: 1,
@@ -153,7 +136,7 @@ export default function () {
         }, {
           label: 'Zumbi',
           callback: () => {
-            addActor({
+            addComponent({
               type: 'monsters',
               label: 'zombie',
               y: 2,
@@ -163,7 +146,7 @@ export default function () {
         }, {
           label: 'Mumia',
           callback: () => {
-            addActor({
+            addComponent({
               type: 'monsters',
               label: 'mummy',
               y: 2,
@@ -173,7 +156,7 @@ export default function () {
         }, {
           label: 'G. Caos',
           callback: () => {
-            addActor({
+            addComponent({
               type: 'monsters',
               label: 'chaos',
               height: 31,
@@ -185,7 +168,7 @@ export default function () {
         }, {
           label: 'Gárgola',
           callback: () => {
-            addActor({
+            addComponent({
               type: 'monsters',
               label: 'gargoyle',
               width: 30,
@@ -248,8 +231,7 @@ export default function () {
             label: 'secretdoor',
             type: 'secretdoors',
             y: 0,
-            x: 7,
-            tilesArr: window.Store.state.board.selectedTiles
+            x: 7
           })
         }
       },
@@ -262,8 +244,7 @@ export default function () {
               label: 'cupboard',
               type: 'furnitures',
               y: 0,
-              x: 2,
-              tilesArr: window.Store.state.board.selectedTiles
+              x: 2
             })
           }
         }, {
@@ -273,8 +254,7 @@ export default function () {
               label: 'chest',
               type: 'furnitures',
               y: 4,
-              x: 0,
-              tilesArr: window.Store.state.board.selectedTiles
+              x: 0
             })
           }
         }, {
@@ -284,8 +264,7 @@ export default function () {
               label: 'alchemistsbench',
               type: 'furnitures',
               y: 3,
-              x: 4,
-              tilesArr: window.Store.state.board.selectedTiles
+              x: 4
             })
           }
         }, {
@@ -293,8 +272,7 @@ export default function () {
           callback: () => {
             addComponent({
               label: 'bookcase',
-              type: 'furnitures',
-              tilesArr: window.Store.state.board.selectedTiles
+              type: 'furnitures'
             })
           }
         }, {
@@ -304,8 +282,7 @@ export default function () {
               label: 'fireplace',
               type: 'furnitures',
               y: 1,
-              x: 1,
-              tilesArr: window.Store.state.board.selectedTiles
+              x: 1
             })
           }
         }, {
@@ -315,8 +292,7 @@ export default function () {
               label: 'table',
               type: 'furnitures',
               y: 5,
-              x: 3,
-              tilesArr: window.Store.state.board.selectedTiles
+              x: 3
             })
           }
         }, {
@@ -326,8 +302,7 @@ export default function () {
               label: 'sorcererstable',
               type: 'furnitures',
               y: 3,
-              x: 2,
-              tilesArr: window.Store.state.board.selectedTiles
+              x: 2
             })
           }
         }, {
@@ -335,8 +310,7 @@ export default function () {
           callback: () => {
             addComponent({
               label: 'weaponsrack',
-              type: 'furnitures',
-              tilesArr: window.Store.state.board.selectedTiles
+              type: 'furnitures'
             })
           }
         }, {
@@ -346,8 +320,7 @@ export default function () {
               label: 'rack',
               type: 'furnitures',
               y: 1,
-              x: 2,
-              tilesArr: window.Store.state.board.selectedTiles
+              x: 2
             })
           }
         }, {
@@ -357,8 +330,7 @@ export default function () {
               label: 'throne',
               type: 'furnitures',
               y: 1,
-              x: 2,
-              tilesArr: window.Store.state.board.selectedTiles
+              x: 2
             })
           }
         }, {
@@ -368,8 +340,7 @@ export default function () {
               label: 'tomb',
               type: 'furnitures',
               y: 4,
-              x: 3,
-              tilesArr: window.Store.state.board.selectedTiles
+              x: 3
             })
           }
         }]
@@ -385,23 +356,19 @@ export default function () {
         sub: [{
           label: 'Lanças',
           callback: () => {
-            // actors.addComponent({ label: 'speartrap' })
             addComponent({
               label: 'speartrap',
-              type: 'traps',
-              tilesArr: window.Store.state.board.selectedTiles
+              type: 'traps'
             })
           }
         }, {
           label: 'Poço',
           callback: () => {
-            // actors.addComponent({ label: 'pittrap', y: 3, x: 4 })
             addComponent({
               label: 'pittrap',
               type: 'traps',
               y: 3,
-              x: 4,
-              tilesArr: window.Store.state.board.selectedTiles
+              x: 4
             })
           }
         }]
@@ -414,8 +381,7 @@ export default function () {
         callback: () => {
           addComponent({
             label: 'stairway',
-            type: 'stairways',
-            tilesArr: window.Store.state.board.selectedTiles
+            type: 'stairways'
           })
         }
       }

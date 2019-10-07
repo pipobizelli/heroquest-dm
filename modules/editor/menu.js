@@ -236,17 +236,23 @@ export default class Menu {
   }
 
   openMenu ({ x, y }) {
-    this.wrapper.addChild(this.drawArea(), this.drawMenu({ x, y }), this.subWrapper)
+    if (this.wrapper) {
+      this.wrapper.addChild(this.drawArea(), this.drawMenu({ x, y }), this.subWrapper)
+    }
   }
 
   closeMenu () {
-    this.closeSubMenu()
-    this.wrapper.removeChildren()
+    if (this.wrapper) {
+      this.closeSubMenu()
+      this.wrapper.removeChildren()
+    }
   }
 
   openSubMenu (sub, y) {
-    this.closeSubMenu()
-    this.subWrapper.addChild(this.drawSubMenu(sub, y))
+    if (this.subWrapper) {
+      this.closeSubMenu()
+      this.subWrapper.addChild(this.drawSubMenu(sub, y))
+    }
   }
 
   openActionsMenu ({ x, y, target }) {
@@ -254,6 +260,8 @@ export default class Menu {
   }
 
   closeSubMenu () {
-    this.subWrapper.removeChildren()
+    if (this.subWrapper) {
+      this.subWrapper.removeChildren()
+    }
   }
 }

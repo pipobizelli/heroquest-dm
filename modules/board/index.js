@@ -1,7 +1,7 @@
 import Config from '@@/config/env'
 import BoardConfig from '@@/data/board.json'
 import Grid from './grid'
-import Components from '@@/modules/board/components'
+import Components from '@@/modules/components'
 
 export async function initSession () {
   const PIXI = await import('pixi.js')
@@ -20,8 +20,9 @@ export async function initSession () {
     .load(async () => {
       const grid = new Grid()
       const components = new Components()
+
       await grid.setup()
-      await components.setup()
+      await components.setup(`${Config.paths.base_url}/api/session.json`)
       canvasApp.stage.addChild(grid.data, components.data)
       loadQuest()
     })
@@ -39,7 +40,7 @@ export async function loadQuest () {
 
   // BLOCKS ===--===--===--===--===--===--===
   for (const b in map.blocks) {
-    components.addBlock(map.blocks[b].tiles)
+    components.addBlock(map.blocks[b].tiles, false)
   }
 
   // DOORS ===--===--===--===--===--===--===

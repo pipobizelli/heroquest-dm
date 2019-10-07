@@ -2,7 +2,8 @@ import Config from '@@/config/env'
 import BoardConfig from '@@/data/board.json'
 import Grid from '@@/modules/editor/grid'
 import Menu from '@@/modules/editor/menu'
-import Actors from '@@/modules/editor/actors'
+// import Componets from '@@/modules/editor/actors'
+import Componets from '@@/modules/components'
 
 export async function initBoard () {
   const PIXI = await import('pixi.js')
@@ -22,11 +23,11 @@ export async function initBoard () {
     .load(async () => {
       const grid = new Grid()
       const menu = new Menu()
-      const actors = new Actors()
+      const actors = new Componets()
 
       await grid.setup()
       await menu.setup()
-      await actors.setup()
+      await actors.setup(`${Config.paths.base_url}/api/editor.json`)
       grid.drawGrid()
       canvasApp.stage.addChild(grid.data, actors.data, menu.data)
       grid.drawBorders()
@@ -35,7 +36,7 @@ export async function initBoard () {
 }
 
 export async function updateBoard () {
-  const actors = new Actors()
+  const actors = new Componets()
   const board = window.Store.state.board
 
   // console.log(board)
@@ -68,8 +69,9 @@ export async function updateBoard () {
       type: 'secretdoors',
       rotation: sd.rotation,
       y: 0,
-      x: 7
-    }, secretdoors[s].tiles)
+      x: 7,
+      tiles: secretdoors[s].tiles
+    })
   }
 
   // STAIRWAYS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -79,8 +81,9 @@ export async function updateBoard () {
     actors.addComponent({
       label: 'stairway',
       type: 'stairways',
-      rotation: sw.rotation
-    }, stairways[s].tiles)
+      rotation: sw.rotation,
+      tiles: stairways[s].tiles
+    })
   }
 
   // FURNITURE =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -92,8 +95,9 @@ export async function updateBoard () {
       type: 'furnitures',
       rotation: furn.rotation,
       y: furn.py,
-      x: furn.px
-    }, furn.tiles)
+      x: furn.px,
+      tiles: furn.tiles
+    })
   }
 
   // TRAPS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -104,8 +108,9 @@ export async function updateBoard () {
       label: trap.label,
       type: 'traps',
       y: trap.py,
-      x: trap.px
-    }, trap.tiles)
+      x: trap.px,
+      tiles: trap.tiles
+    })
   }
 
   // MONSTERS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -118,7 +123,8 @@ export async function updateBoard () {
       y: monster.py,
       x: monster.px,
       height: monster.height,
-      width: monster.width
-    }, monster.tiles)
+      width: monster.width,
+      tiles: monster.tiles
+    })
   }
 }

@@ -1,9 +1,5 @@
 <template>
   <section class="quest">
-    <article class="quest__actions">
-      <button type="button" name="button" @click="updateQuest">Save!</button>
-    </article>
-    <article class="quest__actions"></article>
     <article id="editor"></article>
     <article class="quest__info">
       <div class="quest__data">
@@ -38,6 +34,9 @@
         <h2 class="quest__label">Numero Máximo de Jogadores</h2>
         <p class="quest__value" v-html="quest.slots.length"></p>
       </div>
+      <article class="quest__actions">
+        <button type="button" name="button" @click="updateQuest">Save!</button>
+      </article>
     </article>
   </section>
 </template>

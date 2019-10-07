@@ -1,5 +1,4 @@
 import Config from '@@/config/env'
-import Components from './components'
 
 let instance = null
 export default class Grid {
@@ -13,7 +12,6 @@ export default class Grid {
 
   async setup () {
     this.PIXI = await import('pixi.js')
-    this.components = new Components()
     this.grid = new this.PIXI.Container()
     this.grid.x = 0
     this.grid.y = 0
