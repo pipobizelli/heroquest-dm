@@ -1,5 +1,6 @@
 import Adapter from '../../adapters/firebase'
 import { Add, Get, AddEntities } from './rest'
+
 export async function GetSession (sessionId) {
   try {
     const session = await Get(sessionId)
@@ -17,12 +18,12 @@ export async function GetSession (sessionId) {
       quest: {
         title: quest.name,
         description: quest.description,
-        objectives: {
-          ...quest.objectives
-        },
-        map: quest.map,
-        components: components
-      }
+        // objectives: {
+        //   ...quest.objectives
+        // },
+        map: quest.map
+      },
+      actors: components
     }
   } catch (e) {
     console.log('[factory] session GetSession')
@@ -33,10 +34,11 @@ export async function AddSession (session) {
   // Criar as entities juntando os personagens e components
   try {
     const quest = await Adapter().getDoc('quests', session.quest)
-    const components = await GetComponents(quest)
+    // const components = await GetComponents(quest)
     const characters = await GetCharaceters(session.slots)
+    const monsters = quest.map.monsters
     const heroes = ValidateCharacters(characters)
-    const entitiesArr = heroes.concat(components)
+    const entitiesArr = heroes.concat(monsters)
     const id = await Add(session)
     entitiesArr.map((e) => {
       e.session_id = id
@@ -50,40 +52,20 @@ export async function AddSession (session) {
   }
 }
 
-// Carregar os components da quest
-export async function GetComponents (quest) {
-  try {
-    let components = quest.components.map(async (c) => {
-      let comp = await Adapter().getDoc(c.collection, c.type)
-      return {
-        ...comp,
-        attributes: {
-          ...comp.attributes,
-          tiles: c.attributes.tiles
-        }
-      }
-    })
-    return Promise.all(components)
-  } catch (e) {
-    console.log('[factory] session GetComponents')
-  }
-}
-
 // Carregar e validar os Personagens carregados (se existem e se estão aptos)
 export async function GetCharaceters (slots) {
   try {
-    let characters = slots.map(async (slot, index) => {
-      let char = await Adapter().getDoc('characters', slot.character)
-      let hero = await Adapter().getDoc('heroes', char.type)
+    const characters = slots.map(async (slot, index) => {
+      const char = await Adapter().getDoc('characters', slot.character)
+      const hero = await Adapter().getDoc('heroes', char.type)
       return {
         ...hero,
         ...char,
         slot: index,
-        class: 'hero',
-        attributes: {
-          ...char.attributes,
-          tiles: slot.tiles
-        }
+        // class: 'hero',
+        type: 'hero',
+        attributes: char.attributes,
+        tiles: slot.tiles
       }
     })
     return Promise.all(characters)

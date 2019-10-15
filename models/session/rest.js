@@ -2,7 +2,7 @@ import Adapter from '../../adapters/firebase'
 
 export async function Get (id) {
   try {
-    let response = await Adapter().getDoc('sessions', id)
+    const response = await Adapter().getDoc('sessions', id)
     return response
   } catch (e) {
     console.log('[model] session get')
@@ -12,8 +12,8 @@ export async function Get (id) {
 
 export async function GetAll () {
   try {
-    let sessions = []
-    let response = await Adapter().getAllDocs('sessions')
+    const sessions = []
+    const response = await Adapter().getAllDocs('sessions')
     response.forEach(quest => {
       sessions.push({
         id: quest.id,
@@ -29,7 +29,7 @@ export async function GetAll () {
 
 export async function Add (payload) {
   try {
-    let response = await Adapter().addDoc('sessions', payload)
+    const response = await Adapter().addDoc('sessions', payload)
     return response
   } catch (e) {
     console.log('[model] session add')
@@ -39,7 +39,7 @@ export async function Add (payload) {
 
 export async function AddEntities (arr) {
   try {
-    let response = await Adapter().batchDocs('session_entities', arr)
+    const response = await Adapter().batchDocs('session_entities', arr)
     return response
   } catch (e) {
     console.log('[model] session addEntity')
@@ -49,7 +49,7 @@ export async function AddEntities (arr) {
 
 export async function Update (payload) {
   try {
-    let response = await Adapter().updateDoc('sessions', payload)
+    const response = await Adapter().updateDoc('sessions', payload)
     return response
   } catch (e) {
     console.log('[model] session update')

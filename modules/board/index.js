@@ -33,18 +33,79 @@ export async function loadQuest () {
   const quest = window.Store.state.session.quest
   const map = quest.map
 
-  // DISABLEDS ===--===--===--===--===--===--===
+  // DISABLEDS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   for (const d in map.disabledTiles) {
     components.addDisabledTile(map.disabledTiles[d])
   }
 
-  // BLOCKS ===--===--===--===--===--===--===
+  // BLOCKS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   for (const b in map.blocks) {
     components.addBlock(map.blocks[b].tiles, false)
   }
 
-  // DOORS ===--===--===--===--===--===--===
+  // DOORS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   for (const d in map.doors) {
     components.addDoor(map.doors[d].tiles)
+  }
+
+  // SECRETDOORS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  const secretdoors = map.secretdoors
+  for (const s in secretdoors) {
+    const sd = secretdoors[s]
+    components.addComponent({
+      label: 'secretdoor',
+      type: 'secretdoors',
+      rotation: sd.rotation,
+      y: 0,
+      x: 7,
+      tiles: sd.tiles,
+      events: false,
+      close: false
+    })
+  }
+
+  // STAIRWAYS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  const stairways = map.stairways
+  for (const s in stairways) {
+    const sw = stairways[s]
+    components.addComponent({
+      label: 'stairway',
+      type: 'stairways',
+      rotation: sw.rotation,
+      tiles: sw.tiles,
+      events: false,
+      close: false
+    })
+  }
+
+  // FURNITURE =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  const furnitures = map.furnitures
+  for (const f in furnitures) {
+    const furn = furnitures[f]
+    components.addComponent({
+      label: furn.label,
+      type: 'furnitures',
+      rotation: furn.rotation,
+      y: furn.py,
+      x: furn.px,
+      tiles: furn.tiles,
+      events: false,
+      close: false
+    })
+  }
+
+  // TRAPS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  const traps = map.traps
+  for (const t in traps) {
+    const trap = traps[t]
+    components.addComponent({
+      label: trap.label,
+      type: 'traps',
+      y: trap.py,
+      x: trap.px,
+      tiles: trap.tiles,
+      events: false,
+      close: false
+    })
   }
 }
