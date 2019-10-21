@@ -34,11 +34,13 @@ export default class Components {
     return this.wrapper
   }
 
-  addSlot ({ x, y }) {
+  addSlot (tile) {
+    const tileObj = this.TileHelper.getTilebyHandle(tile[0])
     this.slots++
     const slot = new this.PIXI.Sprite(this.sheet.textures[`${this.slots}.png`])
-    slot.x = x + (this.pX - slot.width / 2)
-    slot.y = y + (this.pY - slot.height / 2)
+    slot.x = Math.round(tileObj.c * 33) + (this.pX - slot.width / 2)
+    slot.y = Math.round(tileObj.l * 33) + (this.pY - slot.height / 2)
+    slot.tiles = [tile]
     slot.label = this.slots
     slot.type = 'slots'
     slot.zIndex = 10
@@ -50,12 +52,12 @@ export default class Components {
   }
 
   closeMenu () {
-    this.grid.drawGrid()
     this.menu.closeMenu()
     window.Store.commit('board/set_components', {
       type: 'selectedTiles',
       arr: []
     })
+    this.grid.drawGrid()
   }
 
   addBlock (tiles, events = true) {
@@ -130,7 +132,6 @@ export default class Components {
   addDisabledTile (tile) {
     const tileSprite = new this.PIXI.Sprite(this.sheet.textures['tile.png'])
     const tileObj = this.TileHelper.getTilebyHandle(tile)
-    // console.log(tileObj)
     tileSprite.label = 'disabled'
     tileSprite.x = parseInt(tileObj.c) * 33
     tileSprite.y = parseInt(tileObj.l) * 33

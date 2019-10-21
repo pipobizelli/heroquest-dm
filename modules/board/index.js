@@ -28,9 +28,10 @@ export async function initSession () {
     })
 }
 
-export async function loadQuest () {
+export function loadQuest () {
   const components = new Components()
   const quest = window.Store.state.session.quest
+  const slots = window.Store.state.session.heroes
   const map = quest.map
 
   // DISABLEDS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -105,6 +106,38 @@ export async function loadQuest () {
       x: trap.px,
       tiles: trap.tiles,
       events: false,
+      close: false
+    })
+  }
+
+  // MONSTERS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  const monsters = map.monsters
+  for (const m in monsters) {
+    const monster = monsters[m]
+    components.addComponent({
+      label: monster.label,
+      type: 'monsters',
+      height: monster.height || 29,
+      width: monster.width || 29,
+      y: monster.py,
+      x: monster.px,
+      tiles: monster.tiles,
+      close: false
+    })
+  }
+
+  // HEROES =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  const heroes = slots
+  for (const h in heroes) {
+    const hero = heroes[h]
+    components.addComponent({
+      label: hero.class,
+      type: 'hero',
+      tiles: hero.tiles,
+      height: 29,
+      width: 29,
+      x: -9,
+      y: -10,
       close: false
     })
   }

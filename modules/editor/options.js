@@ -81,14 +81,13 @@ export default function () {
           return intersection.length < 1
         },
         callback: () => {
-          const tileObj = grid.tilePositon
-          actors.addSlot(tileObj)
           window.Store.commit('board/add_component', {
             component: {
-              tiles: tileObj,
+              tiles: window.Store.state.board.selectedTiles,
               type: 'slots'
             }
           })
+          actors.addSlot(window.Store.state.board.selectedTiles)
         }
       },
       monsters: {

@@ -90,23 +90,6 @@ export default {
         })
       })
     }
-    // characters (val) {
-    //   val.map((c, i) => {
-    //     if (c) {
-    //       let chars = this.all_characters.filter(a => a.data.name === c)
-    //       let char = chars[0]
-    //       if (char) {
-    //         this.slots[i] = {
-    //           character: char.id,
-    //           name: char.data.name,
-    //           class: char.data.class,
-    //           is_loaded: true,
-    //           tiles: this.slots[i].tiles
-    //         }
-    //       }
-    //     }
-    //   })
-    // }
   },
   async created () {
     try {
@@ -152,7 +135,7 @@ export default {
           is_loaded: true,
           tiles: this.slots[i].tiles
         }
-        console.log(this.slots)
+        // console.log(this.slots)
       }
     },
     async create_session () {
@@ -168,7 +151,7 @@ export default {
         }
         this.$router.replace({ path: `sessions/${newSession.data}` })
       } catch (e) {
-        console.log('[page] session create')
+        console.log('[page] session create', e)
       }
     }
   }

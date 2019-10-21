@@ -122,8 +122,8 @@ export async function updateBoard () {
       type: 'monsters',
       y: monster.py,
       x: monster.px,
-      height: monster.height,
-      width: monster.width,
+      height: monster.height || 29,
+      width: monster.width || 29,
       tiles: monster.tiles
     })
   }
