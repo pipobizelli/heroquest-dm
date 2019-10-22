@@ -25,6 +25,10 @@ export default class Grid {
     return this.grid
   }
 
+  drawGrid () {
+    return this
+  }
+
   drawBackground () {
     const background = new this.PIXI.Sprite(this.sheet.textures['background.png'])
     this.grid.addChild(background)

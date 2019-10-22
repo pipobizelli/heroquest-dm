@@ -1,5 +1,5 @@
 import Grid from '@@/modules/editor/grid'
-import Menu from '@@/modules/editor/menu'
+import Menu from '@@/modules/menu'
 
 export function rotateBoardComponent (target) {
   const grid = new Grid()

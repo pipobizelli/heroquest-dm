@@ -1,14 +1,14 @@
 import Config from '@@/config/env'
 import BoardConfig from '@@/data/board.json'
 import Grid from '@@/modules/editor/grid'
-import Menu from '@@/modules/editor/menu'
-// import Componets from '@@/modules/editor/actors'
+import Menu from '@@/modules/menu'
+import Options from './options'
+import Actions from './actions'
 import Componets from '@@/modules/components'
 
 export async function initBoard () {
   const PIXI = await import('pixi.js')
   const canvasApp = new PIXI.Application({ width: BoardConfig.width, height: BoardConfig.height, transparent: true })
-  // document.body.appendChild(canvasApp.view)
   document.getElementById('editor').appendChild(canvasApp.view)
   canvasApp.view.addEventListener('contextmenu', (e) => {
     window.wasRightClick = true
@@ -26,7 +26,11 @@ export async function initBoard () {
       const actors = new Componets()
 
       await grid.setup()
-      await menu.setup()
+      await menu.setup({
+        Grid,
+        Options,
+        Actions
+      })
       await actors.setup(`${Config.paths.base_url}/api/editor.json`)
       grid.drawGrid()
       canvasApp.stage.addChild(grid.data, actors.data, menu.data)

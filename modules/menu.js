@@ -1,7 +1,4 @@
 import BoardConfig from '@@/data/board.json'
-import Grid from './grid'
-import Options from './options'
-import Actions from './actions'
 import { colors } from '@@/modules/colors'
 
 let instance = null
@@ -14,7 +11,7 @@ export default class Menu {
     return instance
   }
 
-  async setup () {
+  async setup ({ Grid, Options = () => {}, Actions }) {
     this.PIXI = await import('pixi.js')
     this.Filters = await import('pixi-filters')
     this.grid = new Grid()
@@ -40,7 +37,7 @@ export default class Menu {
     return this
   }
 
-  setHeight (options) {
+  setHeight (options = { a: 1 }) {
     const groups = Object.values(options)
     let optsLength = 0
     for (const g in groups) {

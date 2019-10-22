@@ -1,6 +1,8 @@
 import Config from '@@/config/env'
 import BoardConfig from '@@/data/board.json'
 import Grid from './grid'
+import Menu from '@@/modules/menu'
+import Actions from './actions'
 import Components from '@@/modules/components'
 
 export async function initSession () {
@@ -19,11 +21,16 @@ export async function initSession () {
   PIXI.Loader.shared
     .load(async () => {
       const grid = new Grid()
+      const menu = new Menu()
       const components = new Components()
 
       await grid.setup()
+      await menu.setup({
+        Grid,
+        Actions
+      })
       await components.setup(`${Config.paths.base_url}/api/session.json`)
-      canvasApp.stage.addChild(grid.data, components.data)
+      canvasApp.stage.addChild(grid.data, components.data, menu.data)
       loadQuest()
     })
 }
@@ -132,7 +139,7 @@ export function loadQuest () {
     const hero = heroes[h]
     components.addComponent({
       label: hero.class,
-      type: 'hero',
+      type: 'heroes',
       tiles: hero.tiles,
       height: 29,
       width: 29,

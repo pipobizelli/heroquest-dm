@@ -1,7 +1,7 @@
 import BoardConfig from '@@/data/board.json'
 // import Config from '@@/config/env'
 import Grid from '@@/modules/editor/grid'
-import Menu from '@@/modules/editor/menu'
+import Menu from '@@/modules/menu'
 import Tile from '@@/helpers/tile'
 import { colors } from '@@/modules/colors'
 
