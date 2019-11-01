@@ -140,7 +140,7 @@ export default class Components {
     this.wrapper.addChild(tileSprite)
   }
 
-  addComponent ({ label, type = 'components', rotation = 0, y = 0, x = 0, width = 0, height = 0, tiles = [], events = true, close = true }) {
+  addComponent ({ id = null, label, type = 'components', rotation = 0, y = 0, x = 0, width = 0, height = 0, tiles = [], events = true, close = true }) {
     if (tiles.length <= 0) {
       return false
     }
@@ -148,6 +148,7 @@ export default class Components {
     const tileObj = this.TileHelper.getTilebyHandle(tiles[0])
     const component = new this.PIXI.Sprite(this.sheet.textures[`${label}.png`])
 
+    component.id = id
     component.label = label
     component.type = type
     component.tiles = tiles

@@ -51,6 +51,10 @@ export const actions = {
   },
   async save_quest ({ state }, id) {
     const board = this.state.board
+    const monstersArr = board.monsters
+    for (const m in monstersArr) {
+
+    }
     const quest = {
       ...state.data,
       slots: board.slots,
@@ -59,7 +63,7 @@ export const actions = {
         disabledTiles: board.disabledTiles,
         doors: board.doors,
         furnitures: board.furnitures,
-        monsters: board.monsters,
+        // monsters: board.monsters,
         searchs: board.searchs,
         secretdoors: board.secretdoors,
         stairways: board.stairways,
@@ -67,9 +71,9 @@ export const actions = {
       }
     }
     console.log(quest)
-    await QuestFacade().updateQuest({
-      id: id,
-      data: quest
-    })
+    // await QuestFacade().updateQuest({
+    //   id: id,
+    //   data: quest
+    // })
   }
 }

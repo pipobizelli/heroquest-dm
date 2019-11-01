@@ -2,7 +2,8 @@ import SessionFacade from '@@/facades/session'
 import DefaultQuest from '@@/data/quest.json'
 export const state = () => ({
   quest: DefaultQuest,
-  heroes: [],
+  slots: [],
+  actors: [],
   turns: []
 })
 
@@ -10,8 +11,11 @@ export const mutations = {
   set_quest (state, quest) {
     state.quest = quest
   },
-  set_heroes (state, heroes) {
-    state.heroes = heroes
+  set_slots (state, slots) {
+    state.slots = slots
+  },
+  set_actors (state, actors) {
+    state.actors = actors
   }
 }
 
@@ -19,7 +23,8 @@ export const actions = {
   async load_quest ({ commit, dispatch }, id) {
     const response = await SessionFacade().getSession(id)
     commit('set_quest', response.data.quest)
-    commit('set_heroes', response.data.slots)
+    commit('set_slots', response.data.slots)
+    commit('set_actors', response.data.actors)
   },
   update_session ({ commit }, data) {
     commit('set_quest', data)

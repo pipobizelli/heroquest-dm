@@ -2,7 +2,7 @@ import Grid from '@@/modules/board/grid'
 import Menu from '@@/modules/menu'
 
 export default function (target) {
-  console.log(target)
+  console.log('id:', target)
   const grid = new Grid()
   const menu = new Menu()
 

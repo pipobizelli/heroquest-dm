@@ -1,7 +1,7 @@
 import Adapter from '../../adapters/firebase'
 export async function Get (id) {
   try {
-    let quest = await Adapter().getDoc('quests', id)
+    const quest = await Adapter().getDoc('quests', id)
     return quest
   } catch (e) {
     console.log('[model] quest')
@@ -11,8 +11,8 @@ export async function Get (id) {
 
 export async function GetAll () {
   try {
-    let quests = []
-    let response = await Adapter().getAllDocs('quests')
+    const quests = []
+    const response = await Adapter().getAllDocs('quests')
     response.forEach(quest => {
       quests.push({
         id: quest.id,
@@ -28,7 +28,7 @@ export async function GetAll () {
 
 export async function Add (payload) {
   try {
-    let response = await Adapter().addDoc('quests', payload)
+    const response = await Adapter().addDoc('quests', payload)
     return response
   } catch (e) {
     console.log('[model] add quest')
@@ -38,7 +38,7 @@ export async function Add (payload) {
 
 export async function Update (payload) {
   try {
-    let response = await Adapter().updateDoc('quests', payload)
+    const response = await Adapter().updateDoc('quests', payload)
     return response
   } catch (e) {
     console.log('[model] update quest')

@@ -42,15 +42,9 @@ export default {
       window.Store = this.$store
       await this.$store.dispatch('session/load_quest', this.id)
       await initSession()
-      this.set_actors()
-    }
-  },
-  methods: {
-    set_actors () {
-      const heroes = window.Store.state.session.heroes
-      this.actors = [...heroes, {
+      this.actors = [...window.Store.state.session.slots, {
         class: 'orc',
-        name: 'monsters'
+        name: 'Monsters'
       }]
     }
   }

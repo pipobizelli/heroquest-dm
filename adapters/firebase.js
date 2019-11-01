@@ -8,7 +8,7 @@ export default () => {
 
     async getDoc (collection, id) {
       try {
-        let db = this.getDb()
+        const db = this.getDb()
         var result = await db.collection(collection).doc(id).get()
         return result.data()
       } catch (e) {
@@ -19,7 +19,7 @@ export default () => {
 
     async getAllDocs (collection) {
       try {
-        let db = this.getDb()
+        const db = this.getDb()
         var result = await db.collection(collection).get()
         return result
       } catch (e) {
@@ -30,7 +30,7 @@ export default () => {
 
     async addDoc (collection, data) {
       try {
-        let db = this.getDb()
+        const db = this.getDb()
         var result = await db.collection(collection).add(data)
         return result.id
       } catch (e) {
@@ -41,8 +41,8 @@ export default () => {
 
     async queryDocs (collection, query) {
       try {
-        let db = this.getDb()
-        let ref = db.collection(collection)
+        const db = this.getDb()
+        const ref = db.collection(collection)
         var result = await ref.where(query[0], query[1], query[2]).get()
         return result.docs
       } catch (e) {
@@ -53,12 +53,12 @@ export default () => {
 
     async batchDocs (collection, arr) {
       try {
-        let db = this.getDb()
-        let batch = db.batch()
+        const db = this.getDb()
+        const batch = db.batch()
         arr.map(async (data) => {
           try {
-            let doc = db.collection(collection).doc()
-            let response = await batch.set(doc, data)
+            const doc = db.collection(collection).doc()
+            const response = await batch.set(doc, data)
             return response
           } catch (e) {
             console.log('[adapter] addDoc batch')
@@ -66,14 +66,14 @@ export default () => {
         })
         return await batch.commit()
       } catch (e) {
-        console.log('[adapter] addDoc')
+        console.log('[adapter] addDoc batch')
         return e
       }
     },
 
     async updateDoc (collection, payload) {
       try {
-        let db = this.getDb()
+        const db = this.getDb()
         var result = await db.collection(collection).doc(payload.id).update(payload.data)
         return result
       } catch (e) {
@@ -84,8 +84,8 @@ export default () => {
 
     async removeDoc (collection, id) {
       try {
-        let db = this.getDb()
-        let result = await db.collection(collection).doc(id).delete()
+        const db = this.getDb()
+        const result = await db.collection(collection).doc(id).delete()
         return result
       } catch (e) {
         console.log('[adapter] removeDoc')

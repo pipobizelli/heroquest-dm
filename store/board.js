@@ -8,9 +8,10 @@ export const state = () => ({
     },
     config: BoardConfig.config
   },
+  monstersArr: [],
+  monsters: [],
   furnitures: [],
   slots: [],
-  monsters: [],
   heroes: [],
   selectedTiles: [],
   disabledTiles: [],

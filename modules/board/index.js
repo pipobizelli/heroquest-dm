@@ -38,7 +38,10 @@ export async function initSession () {
 export function loadQuest () {
   const components = new Components()
   const quest = window.Store.state.session.quest
-  const slots = window.Store.state.session.heroes
+  // const slots = window.Store.state.session.heroes
+  const actors = window.Store.state.session.actors
+  const monsters = actors.filter(a => a.type === 'monsters')
+  const heroes = actors.filter(a => a.type === 'hero')
   const map = quest.map
 
   // DISABLEDS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -118,10 +121,11 @@ export function loadQuest () {
   }
 
   // MONSTERS =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  const monsters = map.monsters
+  // const monsters = map.monsters
   for (const m in monsters) {
     const monster = monsters[m]
     components.addComponent({
+      id: monster.entity_id,
       label: monster.label,
       type: 'monsters',
       height: monster.height || 29,
@@ -134,10 +138,11 @@ export function loadQuest () {
   }
 
   // HEROES =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-  const heroes = slots
+  // const heroes = slots
   for (const h in heroes) {
     const hero = heroes[h]
     components.addComponent({
+      id: hero.entity_id,
       label: hero.class,
       type: 'heroes',
       tiles: hero.tiles,
