@@ -1,7 +1,9 @@
 import QuestFacade from '@@/facades/quest'
+import MonstersFacade from '@@/facades/monsters'
 import DefaultQuest from '@@/data/quest.json'
 export const state = () => ({
-  data: DefaultQuest
+  data: DefaultQuest,
+  monsters: []
 })
 
 export const mutations = {
@@ -10,6 +12,9 @@ export const mutations = {
       ...state.data,
       ...quest
     }
+  },
+  set_monsters (state, monsters) {
+    state.monsters = monsters
   },
   add_slot (state, slot) {
     state.data.slots = [...state.data.slots, slot]
@@ -26,6 +31,10 @@ export const mutations = {
 }
 
 export const actions = {
+  async load_monsters ({ commit }) {
+    const response = await MonstersFacade().getAllMonsters()
+    commit('set_monsters', response.data)
+  },
   async load_quest ({ commit, dispatch }, id) {
     const response = await QuestFacade().getQuest(id)
     commit('set_quest', response.data)
@@ -51,9 +60,14 @@ export const actions = {
   },
   async save_quest ({ state }, id) {
     const board = this.state.board
-    const monstersArr = board.monsters
-    for (const m in monstersArr) {
-
+    const monstersArr = []
+    for (const m in board.monsters) {
+      const monster = board.monsters[m]
+      const monsterObj = state.monsters.find(m => m.id === monster.label)
+      monstersArr.push({
+        ...monster,
+        ...monsterObj.data
+      })
     }
     const quest = {
       ...state.data,
@@ -63,7 +77,7 @@ export const actions = {
         disabledTiles: board.disabledTiles,
         doors: board.doors,
         furnitures: board.furnitures,
-        // monsters: board.monsters,
+        monsters: monstersArr,
         searchs: board.searchs,
         secretdoors: board.secretdoors,
         stairways: board.stairways,
@@ -71,9 +85,9 @@ export const actions = {
       }
     }
     console.log(quest)
-    // await QuestFacade().updateQuest({
-    //   id: id,
-    //   data: quest
-    // })
+    await QuestFacade().updateQuest({
+      id: id,
+      data: quest
+    })
   }
 }

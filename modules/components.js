@@ -140,7 +140,7 @@ export default class Components {
     this.wrapper.addChild(tileSprite)
   }
 
-  addComponent ({ id = null, label, type = 'components', rotation = 0, y = 0, x = 0, width = 0, height = 0, tiles = [], events = true, close = true }) {
+  addComponent ({ id = null, label, type = 'components', rotation = 0, y = 0, x = 0, width = 0, height = 0, tiles = [], events = true, close = true, callbacks = {} }) {
     if (tiles.length <= 0) {
       return false
     }
@@ -161,7 +161,7 @@ export default class Components {
     component.buttonMode = events
 
     if (events) {
-      this.componentEvents(component)
+      this.componentEvents(component, { start: '', on: '', end: 'board/move_component', ...callbacks })
     }
 
     this.wrapper.addChild(component)
@@ -173,12 +173,12 @@ export default class Components {
     return component
   }
 
-  componentEvents (component) {
+  componentEvents (component, callback = { start: '', on: '', end: '' }) {
     component
-      .on('mousedown', (event) => this.onStartDrag(event, component))
-      .on('mousemove', () => this.onMoveDrag(component))
-      .on('mouseupoutside', (event) => this.onStopDrag(event, { component, x: this.pX, y: this.pY }))
-      .on('mouseup', (event) => this.onStopDrag(event, { component, x: this.pX, y: this.pY }))
+      .on('mousedown', (event) => this.onStartDrag(event, { component, callback: callback.start }))
+      .on('mousemove', () => this.onMoveDrag({ component, callback: callback.on }))
+      .on('mouseupoutside', (event) => this.onStopDrag(event, { component, x: this.pX, y: this.pY, callback: callback.end }))
+      .on('mouseup', (event) => this.onStopDrag(event, { component, x: this.pX, y: this.pY, callback: callback.end }))
       .on('rightdown', (event) => {
         const x = component.x
         const y = component.y
@@ -188,14 +188,14 @@ export default class Components {
     return component
   }
 
-  onStartDrag (event, component) {
+  onStartDrag (event, { component, callback }) {
     this.closeMenu()
     component.alpha = 0.8
     component.dragging = true
     component.data = event.data
   }
 
-  onMoveDrag (component) {
+  onMoveDrag ({ component, callback }) {
     if (component.dragging) {
       const newPosition = component.data.getLocalPosition(component.parent)
       component.x = newPosition.x
@@ -203,7 +203,7 @@ export default class Components {
     }
   }
 
-  onStopDrag (event, { component, y = 0, x = 0 }) {
+  onStopDrag (event, { component, y = 0, x = 0, callback }) {
     const gridX = parseInt(event.data.global.x) - BoardConfig.margin
     const gridY = parseInt(event.data.global.y) - BoardConfig.margin
     const diffX = gridX % 33
@@ -214,13 +214,16 @@ export default class Components {
     component.dragging = false
 
     const tile = `${Math.round(component.y / 33)}:${Math.round(component.x / 33)}`
-    window.Store.commit('board/move_component', {
+    window.Store.commit(callback, {
       component: {
+        id: component.id,
+        label: component.label,
         moveTo: [tile],
         tiles: component.tiles,
         type: component.type,
         rotation: component.angle || 0
-      }
+      },
+      action: 'move'
     })
     component.tiles = [tile]
   }

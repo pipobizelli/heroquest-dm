@@ -133,7 +133,10 @@ export function loadQuest () {
       y: monster.py,
       x: monster.px,
       tiles: monster.tiles,
-      close: false
+      close: false,
+      callbacks: {
+        end: 'session/add_action'
+      }
     })
   }
 
@@ -150,7 +153,10 @@ export function loadQuest () {
       width: 29,
       x: -9,
       y: -10,
-      close: false
+      close: false,
+      callbacks: {
+        end: 'session/add_action'
+      }
     })
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <section class="session">
+  <section>
     <article class="session__wrapper">
       <ul class="session__list">
         <li class="session__ref" v-for="(session, i) in sessions">

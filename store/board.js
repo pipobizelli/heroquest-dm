@@ -44,6 +44,7 @@ export const mutations = {
     state[component.type] = [...temp, { ...component }]
   },
   move_component (state, { component }) {
+    // console.log('move!')
     const temp = state[component.type].filter(c => JSON.stringify(c.tiles) !== JSON.stringify(component.tiles))
     const comp = state[component.type].find(c => JSON.stringify(c.tiles) === JSON.stringify(component.tiles))
     state[component.type] = [...temp, {

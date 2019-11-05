@@ -16,6 +16,13 @@ export const mutations = {
   },
   set_actors (state, actors) {
     state.actors = actors
+  },
+  add_action (state, { component, action }) {
+    console.log({ component, action })
+    state.turns.push({
+      ...component,
+      action
+    })
   }
 }
 

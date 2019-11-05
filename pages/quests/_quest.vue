@@ -77,6 +77,7 @@ export default {
     this.id = this.$route.params.quest
     if (process.browser) {
       window.Store = this.$store
+      await this.$store.dispatch('quest/load_monsters')
       await this.$store.dispatch('quest/load_quest', this.id)
       await initBoard()
       this.name = this.$store.state.quest.data.name

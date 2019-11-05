@@ -2,7 +2,7 @@ import Grid from '@@/modules/board/grid'
 import Menu from '@@/modules/menu'
 
 export default function (target) {
-  console.log('id:', target)
+  // console.log('id:', target)
   const grid = new Grid()
   const menu = new Menu()
 
@@ -14,6 +14,19 @@ export default function (target) {
           target.parent.removeChild(target)
           window.Store.commit('board/remove_component', {
             component: target
+          })
+          menu.closeMenu()
+          grid.drawGrid()
+        }
+      },
+      combat: {
+        label: '➤ Atacar',
+        callback: () => {
+          window.Store.commit('session/add_action', {
+            component: {
+              id: target.id
+            },
+            action: 'attack'
           })
           menu.closeMenu()
           grid.drawGrid()
