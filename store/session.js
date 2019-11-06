@@ -4,7 +4,8 @@ export const state = () => ({
   quest: DefaultQuest,
   slots: [],
   actors: [],
-  turns: []
+  turns: [],
+  info: {}
 })
 
 export const mutations = {
@@ -16,6 +17,9 @@ export const mutations = {
   },
   set_actors (state, actors) {
     state.actors = actors
+  },
+  set_info (state, actor) {
+    state.info = actor
   },
   add_action (state, { component, action }) {
     console.log({ component, action })

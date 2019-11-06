@@ -9,6 +9,7 @@
           <p class="initiative__name" v-html="actor.name"></p>
         </li>
       </ul>
+      <info></info>
       <button type="button" @click="pass_turn" name="button">next turn</button>
     </article>
   </section>
@@ -16,7 +17,8 @@
 
 <script>
 import Config from '@@/config/env'
-import { initSession } from '@@/modules/board/index'
+import { initSession } from '@@/modules/session/index'
+import Info from '@@/components/info'
 export default {
   data () {
     return {
@@ -31,6 +33,9 @@ export default {
     active_turn () {
       return this.actual_turn % this.actors.length
     }
+  },
+  components: {
+    Info
   },
   watch: {
     active_turn (val) {

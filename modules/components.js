@@ -161,7 +161,7 @@ export default class Components {
     component.buttonMode = events
 
     if (events) {
-      this.componentEvents(component, { start: '', on: '', end: 'board/move_component', ...callbacks })
+      this.componentEvents(component, { start: '', on: '', end: 'board/move_component', click: '', ...callbacks })
     }
 
     this.wrapper.addChild(component)
@@ -173,7 +173,7 @@ export default class Components {
     return component
   }
 
-  componentEvents (component, callback = { start: '', on: '', end: '' }) {
+  componentEvents (component, callback = { start: '', on: '', end: '', click: '' }) {
     component
       .on('mousedown', (event) => this.onStartDrag(event, { component, callback: callback.start }))
       .on('mousemove', () => this.onMoveDrag({ component, callback: callback.on }))
@@ -183,6 +183,12 @@ export default class Components {
         const x = component.x
         const y = component.y
         this.menu.openActionsMenu({ x, y, target: component })
+      })
+      .on('click', (event) => {
+        if (callback.click !== '') {
+          const actor = window.Store.state.session.actors.find(a => a.entity_id === component.id)
+          window.Store.commit(callback.click, actor)
+        }
       }).interactive = true
 
     return component

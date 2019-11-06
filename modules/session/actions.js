@@ -1,4 +1,4 @@
-import Grid from '@@/modules/board/grid'
+import Grid from '@@/modules/session/grid'
 import Menu from '@@/modules/menu'
 
 export default function (target) {

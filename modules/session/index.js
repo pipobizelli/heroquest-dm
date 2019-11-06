@@ -135,6 +135,7 @@ export function loadQuest () {
       tiles: monster.tiles,
       close: false,
       callbacks: {
+        click: 'session/set_info',
         end: 'session/add_action'
       }
     })
@@ -155,6 +156,7 @@ export function loadQuest () {
       y: -10,
       close: false,
       callbacks: {
+        click: 'session/set_info',
         end: 'session/add_action'
       }
     })
